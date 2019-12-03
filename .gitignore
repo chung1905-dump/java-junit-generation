@@ -1,1 +1,4 @@
 out/*
+*.path
+*.sign
+*.tgt
