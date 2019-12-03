@@ -1,3 +1,5 @@
+package app;
+
 public class CheckTriangle {
     public static void checkTriangleFormed(double a, double b, double c){
         //check all combinations,
