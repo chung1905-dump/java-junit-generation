@@ -1,6 +1,4 @@
-package app;
-
-import app.path.Branch;
+package app.path;
 
 import java.util.ArrayList;
 

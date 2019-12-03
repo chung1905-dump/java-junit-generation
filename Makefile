@@ -1,16 +1,14 @@
 LIB_DIR = `pwd`/lib
+OJ_JAR = $(LIB_DIR)/OpenJava_1.1/openjava.jar
+ETOC_JAR = $(LIB_DIR)/etoc/etoc.jar
+CP_LIB_FLAG = --class-path $(OJ_JAR):$(ETOC_JAR)
+TEST_CLASS = CheckTriangle
 
 compile:
-	javac -d ./out ./src/app/*.java \
-# --module-path /usr/App/lib/javafx-sdk-11.0.2/lib -Xlint:unchecked \
-# --add-modules=javafx.base,javafx.controls,javafx.fxml \
-# -sourcepath ./src ./src/*.java ./src/model/*.java
+	javac -d ./out -sourcepath ./src $(CP_LIB_FLAG) ./src/app/Main.java
 
-test:
-	java -cp ./out app.CheckTriangle
+run:
+	java $(CP_LIB_FLAG):./out app.Main
 
-gen_path_oj:
-	java --class-path $(LIB_DIR)/OpenJava_1.1/classes:$(LIB_DIR)/etoc/etoc.jar:`pwd`/src openjava.ojc.Main -d ./out ./src/app/CheckTriangle.oj
-
-gen_chromosomes:
-	java --class-path $(LIB_DIR)/OpenJava_1.1/classes:$(LIB_DIR)/etoc/etoc.jar:`pwd`/src
+clean:
+	rm -rf out/* CheckTriangle.path CheckTriangle.sign CheckTriangle.tgt
