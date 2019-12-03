@@ -1,33 +1,37 @@
 package app;
 
+import java.util.*;
+
 public class CheckTriangle {
-    public static void checkTriangleFormed(double a, double b, double c){
-        //check all combinations,
-        //sum of any 2 sides must be greater than the third side to form a triangle
-        if(check(a, b, c) && check(a, c, b) && check(b, c, a))
-            System.out.println("Triangle can be formed using side " + a + ", " + b + ", " +c );
+    public static void check(double l1, double l2, double l3)
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("\nLength of First Side: \t");
+        l1 = sc.nextFloat();
+        System.out.println("\nLength of Second Side: \t");
+        l2 = sc.nextFloat();
+        System.out.println("\nLength of Third Side: \t");
+        l3 = sc.nextFloat();
+        if ((l1 + l2) > l3)
+        {
+            if((l1 + l3) > l2)
+            {
+                if(l2 + l3 > l1)
+                {
+                    System.out.println("\nThe Triangle is a Valid Triangle\n\n");
+                }
+                else
+                {
+                    System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+                }
+            }
+            else
+            {
+                System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+            }
+        }
         else
-            System.out.println("Triangle cannot be formed using side " + a + ", " + b + ", " +c );
-    }
-
-    public static boolean check(double x, double y, double z){
-        //check if sum of x and y is greater than z
-        if((x+y)>z)
-            return true;
-
-        System.out.println("Sum of " + x + " and "+ y + " is not > " + z);
-        return false;
-    }
-
-    public static void main(String[] args) {
-        double a = 2.5;
-        double b = 3.5;
-        double c = 5;
-        checkTriangleFormed(a, b, c);
-        System.out.println("________________________");
-         a = 1;
-         b = 3;
-         c = 5;
-        checkTriangleFormed(a, b, c);
-    }
-}
+        {
+            System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+        }
+    }}
