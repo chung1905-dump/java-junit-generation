@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>Test Generator</groupId>
+    <artifactId>tgen</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>tgen</name>
+    <description>Test Generator</description>
+    <properties>
+      <src.dir>src</src.dir>
+    </properties>
+    <build>
+      <sourceDirectory>${src.dir}</sourceDirectory>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>7</source>
+            <target>7</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+    <dependencies>
+      <dependency>
+        <groupId>org.openjava</groupId>
+        <artifactId>openjava</artifactId>
+        <version>1</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/lib/OpenJava_1.1/openjava.jar</systemPath>
+      </dependency>
+    </dependencies>
+</project>

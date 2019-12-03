@@ -3,7 +3,7 @@ package app;
 import it.itc.etoc.*;
 import java.util.*;
 
-public class CheckTriangle instantiates DataFlowInstrumentor {
+public class CheckTriangle instantiates BranchInstrumentor {
     public static void check(double l1, double l2, double l3)
     {
         Scanner sc = new Scanner(System.in);
