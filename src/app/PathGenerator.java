@@ -1,7 +1,7 @@
 package app;
 
 import openjava.ojc.CommandArguments;
-import openjava.ojc.Compiler;
+import openjava.ojc.CustomCompiler;
 
 import java.io.PrintStream;
 
@@ -10,14 +10,14 @@ public class PathGenerator {
         System.err.println("OpenJava Compiler Version 1.1 " + "build 20031119");
         CommandArguments arguments;
         String[] filePath = new String[1];
-        filePath[0] = "CheckTriangle.oj";
+        filePath[0] = "src/app/CheckTriangle.oj";
         try {
             arguments = new CommandArguments(filePath);
         } catch (Exception e) {
             showUsage();
             return;
         }
-        new Compiler(arguments).run();
+        new CustomCompiler(arguments).run();
     }
 
     private static void showUsage() {
