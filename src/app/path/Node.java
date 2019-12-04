@@ -2,7 +2,11 @@ package app.path;
 
 public class Node {
     private Node prev;
-    private int value;
+    private Integer value;
+
+    public Node(Integer v) {
+        value = v;
+    }
 
     public Node getPrev() {
         return prev;
@@ -12,11 +16,11 @@ public class Node {
         this.prev = prev;
     }
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(Integer value) {
         this.value = value;
     }
 }
