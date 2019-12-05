@@ -1,14 +1,8 @@
 package app;
 
-import java.util.*;
-
 public class CheckTriangle {
     public static void check(double l1, double l2, double l3)
     {
-        Scanner sc = new Scanner(System.in);
-        l1 = sc.nextFloat();
-        l2 = sc.nextFloat();
-        l3 = sc.nextFloat();
         if ((l1 + l2) > l3)
         {
             if((l1 + l3) > l2)
@@ -31,4 +25,19 @@ public class CheckTriangle {
         {
             System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
         }
-    }}
+    }
+
+    private static java.util.Set trace = new java.util.HashSet();
+
+
+    public static void newTrace()
+    {
+        trace = new java.util.HashSet();
+    }
+
+
+    public static java.util.Set getTrace()
+    {
+        return trace;
+    }
+}

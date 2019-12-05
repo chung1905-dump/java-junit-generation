@@ -27,8 +27,8 @@ public class PathReader {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        paths.forEach(path -> System.out.println(path));
-        ret.forEach(b -> System.out.println(b));
+        paths.forEach(System.out::println);
+        ret.forEach(System.out::println);
 
         return ret;
     }
