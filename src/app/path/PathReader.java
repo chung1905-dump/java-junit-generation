@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class PathReader {
     public ArrayList<Branch> read(String pathFile) {
-        ArrayList<Branch> ret = new ArrayList<Branch>();
+        ArrayList<Branch> branch = new ArrayList<Branch>();
 
         ArrayList<String> paths = new ArrayList<String>();
         try {
@@ -18,7 +18,7 @@ public class PathReader {
                 ArrayList<Integer> nodeData = reverse_transform(data.split(":|\\s+"));
 
                 Branch b = arr2Branch(nodeData);
-                ret.add(b);
+                branch.add(b);
 
                 paths.add(data);
             }
@@ -28,20 +28,20 @@ public class PathReader {
             e.printStackTrace();
         }
         paths.forEach(System.out::println);
-        ret.forEach(System.out::println);
+        branch.forEach(System.out::println);
 
-        return ret;
+        return branch;
     }
 
     private ArrayList<Integer> reverse_transform(String[] arr) {
-        ArrayList<Integer> ret = new ArrayList<Integer>();
+        ArrayList<Integer> reverseTransformResult = new ArrayList<Integer>();
         for (int i = arr.length - 1; i >= 0; i--) {
             if (arr[i].equals("")) {
                 continue;
             }
-            ret.add(Integer.parseInt(arr[i]));
+            reverseTransformResult.add(Integer.parseInt(arr[i]));
         }
-        return ret;
+        return reverseTransformResult;
     }
 
     private Branch arr2Branch(ArrayList<Integer> a) {
