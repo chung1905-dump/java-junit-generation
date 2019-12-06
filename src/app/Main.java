@@ -1,16 +1,17 @@
 package app;
 
-import app.algorithm.PSO;
+import app.algorithm.GeneticAlgorithm;
 import app.path.Branch;
 import app.path.PathGenerator;
 import app.path.PathReader;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.io.*;
 
 public class Main {
     public static String classUnderTest;
@@ -28,12 +29,12 @@ public class Main {
 
         PathReader pathReader = new PathReader();
         ArrayList<Branch> branches = pathReader.read(target + ".path");
-        CheckTriangle.check(1.1, 1.2, 1.3);
+        CheckTriangle.check(2, 3, 4);
         java.util.Set set = CheckTriangle.getTrace();
-//        System.out.println(set);
+        System.out.println(set);
 
 
-        PSO pso = new PSO(target + ".sign");
+        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign");
     }
 
     private static void editSignatureFile(String fileName) {

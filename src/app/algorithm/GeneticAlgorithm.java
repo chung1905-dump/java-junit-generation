@@ -1,17 +1,15 @@
 package app.algorithm;
 
+import it.itc.etoc.Chromosome;
+import it.itc.etoc.ChromosomeFormer;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import it.itc.etoc.ChromosomeFormer;
-import it.itc.etoc.Chromosome;
-import it.itc.etoc.Action;
-
-public class PSO implements AlgorithmInterface {
+public class GeneticAlgorithm implements AlgorithmInterface {
     private ChromosomeFormer chromFormer;
 
-    public PSO(String signFile) {
+    public GeneticAlgorithm(String signFile) {
         initPopulation(signFile);
     }
 
