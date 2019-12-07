@@ -2,6 +2,7 @@ package app.algorithm;
 
 import it.itc.etoc.Chromosome;
 import it.itc.etoc.ChromosomeFormer;
+import it.itc.etoc.CustomPopulation;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -19,9 +20,11 @@ public class GeneticAlgorithm implements AlgorithmInterface {
     private static List targets = new LinkedList();
     private static Random randomGenerator = new Random();
 
+
     public GeneticAlgorithm(String signFile) {
-        initPopulation(signFile);
-        readTarget("BinaryTree.tgt");
+//        initPopulation(signFile);
+        initPopulation2(signFile);
+//        readTarget("BinaryTree.tgt");
     }
 
 
@@ -50,8 +53,15 @@ public class GeneticAlgorithm implements AlgorithmInterface {
 //        }
     }
 
+    private void initPopulation2(String signFile) {
+        CustomPopulation.setChromosomeFormer(signFile);
+        CustomPopulation population = CustomPopulation.generateRandomPopulation();
+        System.out.println(population);
+
+    }
+
     public void readTarget(String targetFile) {
-        try{
+        try {
             String s;
             Pattern p = Pattern.compile("([^\\s]+)\\s*:\\s*(.*)");
             BufferedReader in = new BufferedReader(new FileReader(targetFile));
@@ -61,7 +71,7 @@ public class GeneticAlgorithm implements AlgorithmInterface {
                 String method = m.group(1);
 //                MethodTarget tgt = new MethodTarget(method);
                 String[] branches = m.group(2).split(",");
-                for (int i = 0 ; i < branches.length ; i++) {
+                for (int i = 0; i < branches.length; i++) {
                     int n = Integer.parseInt(branches[i].trim());
 //                    tgt.addBranch(n);
                 }
