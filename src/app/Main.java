@@ -4,12 +4,14 @@ import app.algorithm.PSO;
 import app.path.Branch;
 import app.path.PathGenerator;
 import app.path.PathReader;
+import app.signature.Reader;
+import it.itc.etoc.MethodSignature;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.io.*;
 
 public class Main {
@@ -25,15 +27,24 @@ public class Main {
         PathGenerator pathGenerator = new PathGenerator();
         pathGenerator.generate(filePath);
         editSignatureFile(target + ".sign");
+        Reader.readSignatures(target + ".sign");
 
-        PathReader pathReader = new PathReader();
-        ArrayList<Branch> branches = pathReader.read(target + ".path");
-        CheckTriangle.check(1.1, 1.2, 1.3);
-        java.util.Set set = CheckTriangle.getTrace();
+        System.out.println(Reader.classUnderTest);
+
+        for (MethodSignature m: Reader.methods.get(Reader.classUnderTest)) {
+            System.out.println(m.getName());
+            for (Object p: m.getParameters()) {
+                System.out.println(p);
+            }
+        }
+
+//        PathReader pathReader = new PathReader();
+//        ArrayList<Branch> branches = pathReader.read(target + ".path");
+//        CheckTriangle.check(1.1, 1.2, 1.3);
+//        java.util.Set set = CheckTriangle.getTrace();
 //        System.out.println(set);
 
-
-        PSO pso = new PSO(target + ".sign");
+//        PSO pso = new PSO(target + ".sign");
     }
 
     private static void editSignatureFile(String fileName) {

@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CustomPopulation extends Population {
-    List<Chromosome> individuals;
-
     public CustomPopulation(List<Chromosome> list) {
         super(list);
     }
