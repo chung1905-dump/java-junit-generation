@@ -1,9 +1,7 @@
 package app;
 
 import app.algorithm.PSO;
-import app.path.Branch;
 import app.path.PathGenerator;
-import app.path.PathReader;
 import app.signature.Reader;
 import it.itc.etoc.MethodSignature;
 
@@ -11,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
 import java.io.*;
 
 public class Main {
@@ -32,10 +29,12 @@ public class Main {
         System.out.println(Reader.classUnderTest);
 
         for (MethodSignature m: Reader.methods.get(Reader.classUnderTest)) {
-            System.out.println(m.getName());
-            for (Object p: m.getParameters()) {
-                System.out.println(p);
-            }
+            PSO pso = new PSO();
+            pso.initSwarm(m);
+//            System.out.println(m.getName());
+//            for (Object p: m.getParameters()) {
+//                System.out.println(p);
+//            }
         }
 
 //        PathReader pathReader = new PathReader();
@@ -56,7 +55,6 @@ public class Main {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             PrintWriter printWriter = new PrintWriter(file);
             printWriter.print("");
-//            bufferedWriter.write("java.lang.Double.Double(double)\n");
             bufferedWriter.write("app.CheckTriangle.CheckTriangle()\n");
             bufferedWriter.write(content);
             bufferedWriter.write("#");
