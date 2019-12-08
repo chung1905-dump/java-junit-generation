@@ -38,16 +38,12 @@ public class PSO {
         int max = 100;
         Random r = new Random();
 
-        System.out.println(varType);
         if (varType.equals("double") || varType.equals("float")) {
-            double random = min + r.nextDouble() * (max - min);
-            return String.valueOf(random);
+            return min + r.nextDouble() * (max - min);
         } else if (varType.equals("int")) {
-            int random = min + r.nextInt() * (max - min);
-            return String.valueOf(random);
+            return min + r.nextInt() * (max - min);
         } else if (varType.equals("boolean")) {
-            boolean random = r.nextBoolean();
-            return String.valueOf(random);
+            return r.nextBoolean();
         } else {
             // Non-support type
             return null;
