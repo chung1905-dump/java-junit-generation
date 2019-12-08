@@ -39,16 +39,65 @@ public class PSO {
             Set<Integer> traces = TestExecutor.run(Class.forName(Reader.classUnderTest), method, p);
             // Fitness
             double point = _fitness(branch, traces);
-//            if (point > p.getHighestScore()){
-//                p.setHighestScore(Math.max(point, p.getHighestScore()));
-//                p.setpBest(p.getPosition());
-//            }
+            // Assign point
+            if (point > p.getHighestScore()) {
+                p.setHighestScore(Math.max(point, p.getHighestScore()));
+                p.setpBest(p.getPosition());
+                if (point > swarm.getHighestScore()) {
+                    swarm.setHighestScore(point);
+                    swarm.setgBest(p.getPosition());
+                }
+            }
 
-            logInfo(p, branch, traces, point);
+//            __logInfo(p, branch, traces, point);
         }
     }
 
-    private void logInfo(Particle<Object> p, Branch b, Set<Integer> t, double point) {
+    public void updateSwarm() {
+        for (Particle<Object> p : getSwarm().getParticles()) {
+            _updateVelocity(p, getSwarm().getgBest());
+            _updatePosition(p);
+            getSwarm().currentGeneration++;
+        }
+    }
+
+    private void _updateVelocity(Particle<Object> p, List<Object> gBest) {
+        int c1 = 2, c2 = 2; // Learning factors
+        List<Object> newVelocity = new ArrayList<>();
+        List<Object> currentV = p.getVelocity();
+        List<Object> pBest = p.getpBest();
+        List<Object> present = p.getPosition();
+
+        for (int i = 0; i < currentV.size(); i++) {
+            Double rand1 = (Double) _random("double", 0, 1);
+            Double rand2 = (Double) _random("double", 0, 1);
+            Double v = (Double) currentV.get(i);
+            Double pB = (Double) pBest.get(i);
+            Double gB = (Double) gBest.get(i);
+            Double pr = (Double) present.get(i);
+            Double newSmallV = v + c1 * rand1 * (pB - pr) + c2 * rand2 * (gB - pr);
+            newVelocity.add(newSmallV);
+        }
+
+        p.setVelocity(newVelocity);
+    }
+
+    private void _updatePosition(Particle<Object> p) {
+        List<Object> newPostition = new ArrayList<>();
+        List<Object> currentV = p.getVelocity();
+        List<Object> present = p.getPosition();
+
+        for (int i = 0; i < currentV.size(); i++) {
+            Double v = (Double) currentV.get(i);
+            Double pr = (Double) present.get(i);
+            Double newSmallP = pr + v;
+            newPostition.add(newSmallP);
+        }
+
+        p.setVelocity(newPostition);
+    }
+
+    private void __logInfo(Particle<Object> p, Branch b, Set<Integer> t, double point) {
         System.out.println("Input: " + p.getPosition());
         System.out.println("Branch: " + b);
         System.out.println("Traces: " + t);
@@ -74,8 +123,10 @@ public class PSO {
     }
 
     private Object _random(String varType) {
-        int min = 1;
-        int max = 100;
+        return _random(varType, 1, 100);
+    }
+
+    private Object _random(String varType, int min, int max) {
         Random r = new Random();
 
         if (varType.equals("double") || varType.equals("float")) {

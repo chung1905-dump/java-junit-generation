@@ -1,6 +1,7 @@
 package app;
 
 import app.algorithm.PSO;
+import app.algorithm.pso.Swarm;
 import app.path.Branch;
 import app.path.PathGenerator;
 import app.path.PathReader;
@@ -34,10 +35,17 @@ public class Main {
 
         for (Branch b : branches) {
             for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
+                System.out.println("Branch: " + b);
                 // TODO: quick check if method m contains target branch (file .tgt)
                 PSO pso = new PSO();
-                pso.initSwarm(m);
-                pso.calculateFitness(b, m);
+                Swarm<?> s = pso.initSwarm(m);
+                while (s.currentGeneration < s.maxGeneration || s.getHighestScore() > 5) {
+                    pso.calculateFitness(b, m);
+                    pso.updateSwarm();
+                }
+                System.out.println("Highscore: " + s.getHighestScore());
+                System.out.println("Best particle: " + s.getgBest());
+                System.out.println("");
             }
         }
     }

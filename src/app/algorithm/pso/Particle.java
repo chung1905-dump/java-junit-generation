@@ -7,7 +7,7 @@ public class Particle<E> {
     private List<E> velocity;
 
     private List<E> pBest;
-    private double highestScore = 0;
+    private double highestScore = -1;
 
     public List<E> getPosition() {
         return position;
