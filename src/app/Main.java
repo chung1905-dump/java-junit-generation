@@ -28,8 +28,6 @@ public class Main {
         editSignatureFile(target + ".sign");
         Reader.readSignatures(target + ".sign");
 
-        System.out.println(Reader.classUnderTest);
-
         PathReader pathReader = new PathReader();
         ArrayList<Branch> branches = pathReader.read(target + ".path");
 
@@ -39,9 +37,10 @@ public class Main {
                 // TODO: quick check if method m contains target branch (file .tgt)
                 PSO pso = new PSO();
                 Swarm<?> s = pso.initSwarm(m);
-                while (s.currentGeneration < s.maxGeneration || s.getHighestScore() > 5) {
+                while (s.currentGeneration < s.maxGeneration && s.getHighestScore() < 1) {
                     pso.calculateFitness(b, m);
                     pso.updateSwarm();
+                    s.currentGeneration++;
                 }
                 System.out.println("Highscore: " + s.getHighestScore());
                 System.out.println("Best particle: " + s.getgBest());

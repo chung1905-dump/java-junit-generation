@@ -1,6 +1,7 @@
 package app.algorithm;
 
 import app.algorithm.pso.Particle;
+import app.system.Output;
 import it.itc.etoc.MethodSignature;
 
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +14,9 @@ public class TestExecutor {
 
         Object[] args = particle.getPosition().toArray();
         Method method = objectToTest.getMethod(methodSignature.getName(), stringToClass(methodSignature.getParameters().toArray()));
+        Output.disable();
         method.invoke(null, args);
+        Output.enable();
 
         Method getTrace = objectToTest.getMethod("getTrace");
         return (Set<Integer>) getTrace.invoke(null);

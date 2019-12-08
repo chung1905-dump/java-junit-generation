@@ -17,7 +17,6 @@ public class PSO {
 
     public Swarm<Object> initSwarm(MethodSignature methodSignature) {
         swarm = new Swarm<>();
-        System.out.println(methodSignature.getName());
         for (int i = 0; i < swarm.size; i++) {
             Particle<Object> particle = new Particle<>();
             particle.setPosition(randomFromParams(methodSignature));
@@ -57,7 +56,6 @@ public class PSO {
         for (Particle<Object> p : getSwarm().getParticles()) {
             _updateVelocity(p, getSwarm().getgBest());
             _updatePosition(p);
-            getSwarm().currentGeneration++;
         }
     }
 
