@@ -18,20 +18,28 @@ public class GeneticAlgorithm implements AlgorithmInterface {
     private ChromosomeFormer chromosomeFormer;
     private static List targets = new LinkedList();
     private static Random randomGenerator = new Random();
-    private static String[] simpleChromosome;
+    private static List<Object> simpleChromosome;
+    private static List<Object> population = new ArrayList<Object>();
 
 
     public GeneticAlgorithm(String signFile) {
         Reader.readSignatures(signFile);
         System.out.println(Reader.classUnderTest);
         int i = 0;
-        for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
-            System.out.println(m.getName());
-            for (Object p : m.getParameters()) {
-                generateValueForChromosome(p.toString(), i);
-                i++;
+        int populationSize = 10;
+        for (int j = 0; j < populationSize; j++) {
+            simpleChromosome = new ArrayList<Object>();
+            for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
+                System.out.println(m.getName());
+                for (Object p : m.getParameters()) {
+                    generateValueForChromosome(p.toString(), i);
+                    i++;
+                }
+                population.add(j, simpleChromosome);
+                i = 0;
             }
         }
+
 
         initPopulation(signFile);
         initPopulation2(signFile);
@@ -127,18 +135,16 @@ public class GeneticAlgorithm implements AlgorithmInterface {
         int max = 100;
         Random r = new Random();
 
-        System.out.println(varType);
         if (varType.equals("double") || varType.equals("float")) {
             double random = min + r.nextDouble() * (max - min);
-            simpleChromosome[i] = String.valueOf(random);
+            simpleChromosome.add(i, random);
         } else if (varType.equals("int")) {
             int random = min + r.nextInt() * (max - min);
-            simpleChromosome[i] = String.valueOf(random);
+            simpleChromosome.add(i, random);
         } else if (varType.equals("boolean")) {
             boolean random = r.nextBoolean();
-            simpleChromosome[i] = String.valueOf(random);
+            simpleChromosome.add(i, random);
         }
-
     }
 
 
