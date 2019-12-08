@@ -1,5 +1,7 @@
 package app.algorithm;
 
+import app.CheckTriangle;
+import app.path.Branch;
 import app.signature.Reader;
 import it.itc.etoc.Chromosome;
 import it.itc.etoc.ChromosomeFormer;
@@ -10,6 +12,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,17 +24,20 @@ public class GeneticAlgorithm implements AlgorithmInterface {
     private static Random randomGenerator = new Random();
     private static List<Object> simpleChromosome;
     private static List<Object> population = new ArrayList<Object>();
+    private static List<Object> traces = new ArrayList<Object>();
 
 
-    public GeneticAlgorithm(String signFile) {
+    public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Reader.readSignatures(signFile);
         System.out.println(Reader.classUnderTest);
         int i = 0;
         int populationSize = 10;
+        String methodName = "";
         for (int j = 0; j < populationSize; j++) {
             simpleChromosome = new ArrayList<Object>();
             for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
-                System.out.println(m.getName());
+//                System.out.println(m.getName());
+                methodName = m.getName().toString();
                 for (Object p : m.getParameters()) {
                     generateValueForChromosome(p.toString(), i);
                     i++;
@@ -40,9 +47,15 @@ public class GeneticAlgorithm implements AlgorithmInterface {
             }
         }
 
+        Class<?> testClass = Class.forName(Reader.classUnderTest);
+        Method m = testClass.getMethod(methodName, double.class, double.class, double.class);
+        m.invoke(null, 2, 3, 4);
+        Method n = testClass.getMethod("getTrace");
+        java.util.Set set = (Set) n.invoke(null);
+        System.out.println(set);
 
-        initPopulation(signFile);
-        initPopulation2(signFile);
+//        initPopulation(signFile);
+//        initPopulation2(signFile);
     }
 
 

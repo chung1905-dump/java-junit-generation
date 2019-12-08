@@ -6,6 +6,8 @@ import app.path.PathGenerator;
 import app.path.PathReader;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -16,7 +18,7 @@ import it.itc.etoc.MethodSignature;
 public class Main {
     public static String classUnderTest;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         String target = "CheckTriangle";
 
         String[] filePath = new String[2];
@@ -28,13 +30,15 @@ public class Main {
         editSignatureFile(target + ".sign");
 
 
-//        PathReader pathReader = new PathReader();
-//        ArrayList<Branch> branches = pathReader.read(target + ".path");
+        PathReader pathReader = new PathReader();
+        ArrayList<Branch> branches = pathReader.read(target + ".path");
 //        CheckTriangle.check(2, 3, 4);
 //        java.util.Set set = CheckTriangle.getTrace();
 //        System.out.println(set);
 
-        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign");
+
+
+        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign", branches);
     }
 
     private static void editSignatureFile(String fileName) {
