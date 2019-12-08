@@ -40,20 +40,9 @@ public class Main {
                 Class<?> clazz = Class.forName(Reader.classUnderTest);
                 System.out.println("Input: " + p.getPosition());
                 Set traces = TestExecutor.run(clazz, m, p);
-                System.out.println("Traces: " + traces);
+                System.out.println("Traces: " + traces + "\n");
             }
-//            System.out.println(m.getName());
-//            for (Object p: m.getParameters()) {
-//                System.out.println(p);
-//            }
         }
-
-//        PathReader pathReader = new PathReader();
-//        ArrayList<Branch> branches = pathReader.read(target + ".path");
-//        java.util.Set set = CheckTriangle.getTrace();
-//        System.out.println(set);
-
-//        PSO pso = new PSO(target + ".sign");
     }
 
     private static void editSignatureFile(String fileName) {

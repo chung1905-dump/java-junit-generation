@@ -15,7 +15,7 @@ public class TestExecutor {
         clearTrace(clazz);
 
         Object[] args = particle.getPosition().toArray();
-        Method method = clazz.getMethod(methodSignature.getName(), double.class, double.class, double.class);
+        Method method = clazz.getMethod(methodSignature.getName(), stringToClass(methodSignature.getParameters().toArray()));
         method.invoke(null, args);
 
         Method getTrace = clazz.getMethod("getTrace");
@@ -26,5 +26,32 @@ public class TestExecutor {
         Field f = clazz.getDeclaredField("trace");
         f.setAccessible(true);
         f.set(null, new HashSet<>());
+    }
+
+    private static Class<?>[] stringToClass(Object[] strings) {
+        Class<?>[] classes = new Class[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            Class<?> c;
+            switch (strings[i].toString()) {
+                case "double":
+                    c = double.class;
+                    break;
+                case "float":
+                    c = float.class;
+                    break;
+                case "int":
+                    c = int.class;
+                    break;
+                case "boolean":
+                    c = boolean.class;
+                    break;
+                default:
+                    // Non-support type
+                    c = null;
+            }
+            classes[i] = c;
+        }
+
+        return classes;
     }
 }
