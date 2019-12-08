@@ -7,6 +7,7 @@ public class Particle<E> {
     private List<E> velocity;
 
     private List<E> pBest;
+    private double highestScore = 0;
 
     public List<E> getPosition() {
         return position;
@@ -30,5 +31,13 @@ public class Particle<E> {
 
     public void setpBest(List<E> pBest) {
         this.pBest = pBest;
+    }
+
+    public double getHighestScore() {
+        return highestScore;
+    }
+
+    public void setHighestScore(double highestScore) {
+        this.highestScore = highestScore;
     }
 }

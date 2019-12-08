@@ -1,11 +1,15 @@
 package app.algorithm;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import app.algorithm.pso.Particle;
 import app.algorithm.pso.Swarm;
+import app.path.Branch;
+import app.signature.Reader;
 import it.itc.etoc.MethodSignature;
 
 public class PSO {
@@ -24,6 +28,42 @@ public class PSO {
 
         return swarm;
     }
+
+    /**
+     * @param branch (Target branch)
+     * @param method (Method to execute)
+     */
+    public void calculateFitness(Branch branch, MethodSignature method) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        for (Particle<Object> p : getSwarm().getParticles()) {
+            // Run
+            Set<Integer> traces = TestExecutor.run(Class.forName(Reader.classUnderTest), method, p);
+            // Fitness
+            double point = _fitness(branch, traces);
+//            if (point > p.getHighestScore()){
+//                p.setHighestScore(Math.max(point, p.getHighestScore()));
+//                p.setpBest(p.getPosition());
+//            }
+
+            logInfo(p, branch, traces, point);
+        }
+    }
+
+    private void logInfo(Particle<Object> p, Branch b, Set<Integer> t, double point) {
+        System.out.println("Input: " + p.getPosition());
+        System.out.println("Branch: " + b);
+        System.out.println("Traces: " + t);
+        System.out.println("Point: " + (int) (point * 100) + "/100");
+        System.out.println("");
+    }
+
+    private double _fitness(Branch b, Set<Integer> traces) {
+        int origSize = b.getNodes().size();
+        Set<Integer> branchSet = b.toSet();
+        branchSet.removeAll(traces);
+
+        return (double) (origSize - branchSet.size()) / origSize;
+    }
+
 
     private List<Object> randomFromParams(MethodSignature methodSignature) {
         List<Object> ret = new ArrayList<>();
