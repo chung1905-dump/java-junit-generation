@@ -49,4 +49,12 @@ public class PSO {
             return null;
         }
     }
+
+    public Swarm<Object> getSwarm() {
+        return swarm;
+    }
+
+    public void setSwarm(Swarm<Object> swarm) {
+        this.swarm = swarm;
+    }
 }

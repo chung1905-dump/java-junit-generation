@@ -13,4 +13,8 @@ public class Swarm<E> {
         }
         particles.add(particle);
     }
+
+    public List<Particle<E>> getParticles() {
+        return particles;
+    }
 }

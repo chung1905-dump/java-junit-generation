@@ -1,20 +1,25 @@
 package app;
 
 import app.algorithm.PSO;
+import app.algorithm.TestExecutor;
+import app.algorithm.pso.Particle;
 import app.path.PathGenerator;
 import app.signature.Reader;
 import it.itc.etoc.MethodSignature;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.*;
+import java.util.Set;
 
 public class Main {
     public static String classUnderTest;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
         String target = "CheckTriangle";
 
         String[] filePath = new String[2];
@@ -28,9 +33,15 @@ public class Main {
 
         System.out.println(Reader.classUnderTest);
 
-        for (MethodSignature m: Reader.methods.get(Reader.classUnderTest)) {
+        for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
             PSO pso = new PSO();
             pso.initSwarm(m);
+            for (Particle<?> p : pso.getSwarm().getParticles()) {
+                Class<?> clazz = Class.forName(Reader.classUnderTest);
+                System.out.println("Input: " + p.getPosition());
+                Set traces = TestExecutor.run(clazz, m, p);
+                System.out.println("Traces: " + traces);
+            }
 //            System.out.println(m.getName());
 //            for (Object p: m.getParameters()) {
 //                System.out.println(p);
@@ -39,7 +50,6 @@ public class Main {
 
 //        PathReader pathReader = new PathReader();
 //        ArrayList<Branch> branches = pathReader.read(target + ".path");
-//        CheckTriangle.check(1.1, 1.2, 1.3);
 //        java.util.Set set = CheckTriangle.getTrace();
 //        System.out.println(set);
 

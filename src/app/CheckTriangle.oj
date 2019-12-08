@@ -11,21 +11,21 @@ public class CheckTriangle instantiates BranchInstrumentor {
             {
                 if(l2 + l3 > l1)
                 {
-                    System.out.println("\nThe Triangle is a Valid Triangle\n\n");
+                    System.out.println("The Triangle is a Valid Triangle");
                 }
                 else
                 {
-                    System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+                    System.out.println("The Triangle is Not a Valid Triangle");
                 }
             }
             else
             {
-                System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+                System.out.println("The Triangle is Not a Valid Triangle");
             }
         }
         else
         {
-            System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+            System.out.println("The Triangle is Not a Valid Triangle");
         }
     }
 }
