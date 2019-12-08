@@ -5,9 +5,12 @@ import java.util.List;
 
 public class CustomPopulation extends Population {
 
-    public CustomPopulation(List list) {
+//    private List<Chromosome> individuals;
+
+    private CustomPopulation(List<Chromosome> list) {
         super(list);
     }
+
 
     public static CustomPopulation generateRandomPopulation() {
         List<Chromosome> individs = new LinkedList<>();
@@ -16,6 +19,10 @@ public class CustomPopulation extends Population {
             individs.add(chromosomeFormer.getChromosome());
         }
         return new CustomPopulation(individs);
+    }
+
+    public List getChromoList() {
+        return individuals;
     }
 
 }

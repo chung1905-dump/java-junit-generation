@@ -1,17 +1,16 @@
 package app.algorithm;
 
+import app.signature.Reader;
 import it.itc.etoc.Chromosome;
 import it.itc.etoc.ChromosomeFormer;
 import it.itc.etoc.CustomPopulation;
+import it.itc.etoc.MethodSignature;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,12 +18,23 @@ public class GeneticAlgorithm implements AlgorithmInterface {
     private ChromosomeFormer chromosomeFormer;
     private static List targets = new LinkedList();
     private static Random randomGenerator = new Random();
+    private static String[] simpleChromosome;
 
 
     public GeneticAlgorithm(String signFile) {
-//        initPopulation(signFile);
+        Reader.readSignatures(signFile);
+        System.out.println(Reader.classUnderTest);
+        int i = 0;
+        for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
+            System.out.println(m.getName());
+            for (Object p : m.getParameters()) {
+                generateValueForChromosome(p.toString(), i);
+                i++;
+            }
+        }
+
+        initPopulation(signFile);
         initPopulation2(signFile);
-//        readTarget("BinaryTree.tgt");
     }
 
 
@@ -43,6 +53,7 @@ public class GeneticAlgorithm implements AlgorithmInterface {
         chromosomeFormer.buildNewChromosome();
         Chromosome chromosome = chromosomeFormer.getChromosome();
         System.out.println(chromosome.toCode());
+        System.out.println(chromosome);
 
 //        List actions = chromosome.getActions();
 
@@ -56,35 +67,80 @@ public class GeneticAlgorithm implements AlgorithmInterface {
     private void initPopulation2(String signFile) {
         CustomPopulation.setChromosomeFormer(signFile);
         CustomPopulation population = CustomPopulation.generateRandomPopulation();
-        System.out.println(population);
+        List ChromosomeList = population.getChromoList();
 
-    }
+        System.out.println(ChromosomeList.get(0));
+        for (int i = 0; i < ChromosomeList.size(); i++) {
 
-    public void readTarget(String targetFile) {
-        try {
-            String s;
-            Pattern p = Pattern.compile("([^\\s]+)\\s*:\\s*(.*)");
-            BufferedReader in = new BufferedReader(new FileReader(targetFile));
-            while ((s = in.readLine()) != null) {
-                Matcher m = p.matcher(s);
-                if (!m.find()) continue;
-                String method = m.group(1);
-//                MethodTarget tgt = new MethodTarget(method);
-                String[] branches = m.group(2).split(",");
-                for (int i = 0; i < branches.length; i++) {
-                    int n = Integer.parseInt(branches[i].trim());
-//                    tgt.addBranch(n);
-                }
-//                targets.add(tgt);
-            }
-        } catch (NumberFormatException e) {
-            System.err.println("Wrong format file: " + targetFile);
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println("IO error: " + targetFile);
-            System.exit(1);
+//            String chromosome = renameChromsomeVariables(ChromosomeList.get(i).toString());
+            String chromosome = ChromosomeList.get(i).toString();
+            String inputDescription = chromosome.substring(0,
+                    chromosome.indexOf("@"));
+            String inputValues = chromosome.substring(chromosome.indexOf("@") + 1);
+            String[] actions = inputDescription.split(":");
+
+            String[] values = inputValues.split(",");
+            int n = -1;
+//            for (int j = 0; j < actions.length; j++) {
+//                if (actions[i].contains("=")) {
+//                    String targetObj = actions[i].substring(0,
+//                            actions[i].indexOf("="));
+//                    int k = Integer.parseInt(targetObj.substring(2));
+//                    if (k > n) n = k;
+//                }
+//            }
+
         }
     }
+
+    private static String renameChromsomeVariables(String chrom) {
+        String inputDescription = chrom.substring(0, chrom.indexOf("@"));
+        String[] actions = inputDescription.split(":");
+        int n = 0;
+        Map mapIndex = new HashMap();
+        for (int i = 0; i < actions.length; i++)
+            if (actions[i].contains("=")) {
+                String targetObj = actions[i].substring(2,
+                        actions[i].indexOf("="));
+                int k = Integer.parseInt(targetObj);
+                mapIndex.put(k, n++);
+            }
+        Iterator i = mapIndex.keySet().iterator();
+        while (i.hasNext()) {
+            Integer x = (Integer) i.next();
+            int k = x;
+            int j = (Integer) mapIndex.get(x);
+            if (k == j) continue;
+            Pattern p = Pattern.compile("(.*)\\$x" + k + "([\\.=,\\)].*)");
+            Matcher m = p.matcher(chrom);
+            while (m.find()) {
+                chrom = m.group(1) + "$y" + j + m.group(2);
+                m = p.matcher(chrom);
+            }
+        }
+        chrom = chrom.replaceAll("\\$y", "\\$x");
+        return chrom;
+    }
+
+    private static void generateValueForChromosome(String varType, int i) {
+        int min = 1;
+        int max = 100;
+        Random r = new Random();
+
+        System.out.println(varType);
+        if (varType.equals("double") || varType.equals("float")) {
+            double random = min + r.nextDouble() * (max - min);
+            simpleChromosome[i] = String.valueOf(random);
+        } else if (varType.equals("int")) {
+            int random = min + r.nextInt() * (max - min);
+            simpleChromosome[i] = String.valueOf(random);
+        } else if (varType.equals("boolean")) {
+            boolean random = r.nextBoolean();
+            simpleChromosome[i] = String.valueOf(random);
+        }
+
+    }
+
 
     @Override
     public ArrayList getCurrentTestArgs() {

@@ -8,7 +8,10 @@ import app.path.PathReader;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
+
+import app.signature.Reader;
+import it.itc.etoc.MethodSignature;
 
 public class Main {
     public static String classUnderTest;
@@ -24,12 +27,12 @@ public class Main {
         pathGenerator.generate(filePath);
         editSignatureFile(target + ".sign");
 
-        PathReader pathReader = new PathReader();
-        ArrayList<Branch> branches = pathReader.read(target + ".path");
-//        CheckTriangle.check(2, 3, 6);
-        CheckTriangle.check(2, 3, 4);
-        java.util.Set set = CheckTriangle.getTrace();
-        System.out.println(set);
+
+//        PathReader pathReader = new PathReader();
+//        ArrayList<Branch> branches = pathReader.read(target + ".path");
+//        CheckTriangle.check(2, 3, 4);
+//        java.util.Set set = CheckTriangle.getTrace();
+//        System.out.println(set);
 
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign");
     }
