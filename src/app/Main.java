@@ -18,7 +18,7 @@ import it.itc.etoc.MethodSignature;
 public class Main {
     public static String classUnderTest;
 
-    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NoSuchFieldException {
         String target = "CheckTriangle";
 
         String[] filePath = new String[2];

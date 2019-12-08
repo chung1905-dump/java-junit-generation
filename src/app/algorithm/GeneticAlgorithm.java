@@ -12,13 +12,14 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GeneticAlgorithm implements AlgorithmInterface {
+public class GeneticAlgorithm{
     private ChromosomeFormer chromosomeFormer;
     private static List targets = new LinkedList();
     private static Random randomGenerator = new Random();
@@ -27,7 +28,7 @@ public class GeneticAlgorithm implements AlgorithmInterface {
     private static List<Object> traces = new ArrayList<Object>();
 
 
-    public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
         Reader.readSignatures(signFile);
         System.out.println(Reader.classUnderTest);
         int i = 0;
@@ -42,17 +43,23 @@ public class GeneticAlgorithm implements AlgorithmInterface {
                     generateValueForChromosome(p.toString(), i);
                     i++;
                 }
+
                 population.add(j, simpleChromosome);
                 i = 0;
             }
         }
 
-        Class<?> testClass = Class.forName(Reader.classUnderTest);
-        Method m = testClass.getMethod(methodName, double.class, double.class, double.class);
-        m.invoke(null, 2, 3, 4);
-        Method n = testClass.getMethod("getTrace");
-        java.util.Set set = (Set) n.invoke(null);
-        System.out.println(set);
+        for (int z = 0; z < populationSize; z++) {
+            List<Object> chromosomeX = (List<Object>) population.get(z);
+            Class<?> testClass = Class.forName(Reader.classUnderTest);
+            Method m = testClass.getMethod(methodName, double.class, double.class, double.class);
+            m.invoke(null, chromosomeX.get(0), chromosomeX.get(1), chromosomeX.get(2));
+            Method n = testClass.getMethod("getTrace");
+            java.util.Set set = (Set) n.invoke(null);
+            System.out.println(set);
+            clearTrace(testClass);
+        }
+
 
 //        initPopulation(signFile);
 //        initPopulation2(signFile);
@@ -160,19 +167,10 @@ public class GeneticAlgorithm implements AlgorithmInterface {
         }
     }
 
-
-    @Override
-    public ArrayList getCurrentTestArgs() {
-        return null;
+    private static void clearTrace(Class<?> clazz) throws NoSuchFieldException, IllegalAccessException {
+        Field f = clazz.getDeclaredField("trace");
+        f.setAccessible(true);
+        f.set(null, new HashSet<>());
     }
 
-    @Override
-    public void change() {
-
-    }
-
-    @Override
-    public void fitnessCalculate() {
-
-    }
 }

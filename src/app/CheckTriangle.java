@@ -27,7 +27,7 @@ public class CheckTriangle {
         }
     }
 
-    private static java.util.Set trace = new java.util.HashSet();
+    public static java.util.Set trace = new java.util.HashSet();
 
 
     public static void newTrace()
