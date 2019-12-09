@@ -19,13 +19,16 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GeneticAlgorithm{
+public class GeneticAlgorithm {
     private ChromosomeFormer chromosomeFormer;
     private static List targets = new LinkedList();
     private static Random randomGenerator = new Random();
     private static List<Object> simpleChromosome;
     private static List<Object> population = new ArrayList<Object>();
+    private static List<Object> populationTemp;
+    private static List<Object> simpleChromosomeTemp = new ArrayList<Object>();
     private static List<Object> traces = new ArrayList<Object>();
+    private static String methodName = "";
 
 
     public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
@@ -33,7 +36,9 @@ public class GeneticAlgorithm{
         System.out.println(Reader.classUnderTest);
         int i = 0;
         int populationSize = 10;
-        String methodName = "";
+//        String methodName = "";
+
+        // Generate population
         for (int j = 0; j < populationSize; j++) {
             simpleChromosome = new ArrayList<Object>();
             for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
@@ -49,22 +54,68 @@ public class GeneticAlgorithm{
             }
         }
 
-        for (int z = 0; z < populationSize; z++) {
-            List<Object> chromosomeX = (List<Object>) population.get(z);
-            Class<?> testClass = Class.forName(Reader.classUnderTest);
-            Method m = testClass.getMethod(methodName, double.class, double.class, double.class);
-            m.invoke(null, chromosomeX.get(0), chromosomeX.get(1), chromosomeX.get(2));
-            Method n = testClass.getMethod("getTrace");
-            java.util.Set set = (Set) n.invoke(null);
-            System.out.println(set);
-            clearTrace(testClass);
-        }
 
+        branches.forEach((branch -> {
+            if (branch.toString().length() >= 4) {
+                // Run population
+//                try {
+                double fitnessPoint = 0;
+                for (int z = 0; z < populationSize; z++) {
+                    List<Object> chromosomeX = (List<Object>) population.get(z);
+                    fitnessPoint = computeFitness(chromosomeX);
+                    chromosomeX.add(3, fitnessPoint);
+//                        Class<?> testClass = Class.forName(Reader.classUnderTest);
+//                        Method m = testClass.getMethod(methodName, double.class, double.class, double.class);
+//                        m.invoke(null, chromosomeX.get(0), chromosomeX.get(1), chromosomeX.get(2));
+//                        Method n = testClass.getMethod("getTrace");
+//                        java.util.Set set = (Set) n.invoke(null);
+//                        System.out.println(set);
+//                        clearTrace(testClass);
+                }
 
-//        initPopulation(signFile);
-//        initPopulation2(signFile);
+//                } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }));
     }
 
+    private static double computeFitness(List<Object> chromosomeX) {
+        double a, b, c;
+        double x, y, z;
+        x = (double) chromosomeX.get(0);
+        y = (double) chromosomeX.get(1);
+        z = (double) chromosomeX.get(2);
+        a = z - (x + y);
+        b = y - (x + z);
+        c = x - (y + z);
+        double smallest = Math.min(a, Math.min(b, c));
+        return smallest;
+    }
+
+
+    private static void generateValueForChromosome(String varType, int i) {
+        int min = 1;
+        int max = 100;
+        Random r = new Random();
+
+        if (varType.equals("double") || varType.equals("float")) {
+            double random = min + r.nextDouble() * (max - min);
+            simpleChromosome.add(i, random);
+        } else if (varType.equals("int")) {
+            int random = min + r.nextInt() * (max - min);
+            simpleChromosome.add(i, random);
+        } else if (varType.equals("boolean")) {
+            boolean random = r.nextBoolean();
+            simpleChromosome.add(i, random);
+        }
+    }
+
+    private static void clearTrace(Class<?> clazz) throws NoSuchFieldException, IllegalAccessException {
+        Field f = clazz.getDeclaredField("trace");
+        f.setAccessible(true);
+        f.set(null, new HashSet<>());
+    }
 
     private void initPopulation(String signFile) {
         chromosomeFormer = new ChromosomeFormer();
@@ -150,27 +201,16 @@ public class GeneticAlgorithm{
         return chrom;
     }
 
-    private static void generateValueForChromosome(String varType, int i) {
-        int min = 1;
-        int max = 100;
-        Random r = new Random();
-
-        if (varType.equals("double") || varType.equals("float")) {
-            double random = min + r.nextDouble() * (max - min);
-            simpleChromosome.add(i, random);
-        } else if (varType.equals("int")) {
-            int random = min + r.nextInt() * (max - min);
-            simpleChromosome.add(i, random);
-        } else if (varType.equals("boolean")) {
-            boolean random = r.nextBoolean();
-            simpleChromosome.add(i, random);
-        }
-    }
-
-    private static void clearTrace(Class<?> clazz) throws NoSuchFieldException, IllegalAccessException {
-        Field f = clazz.getDeclaredField("trace");
-        f.setAccessible(true);
-        f.set(null, new HashSet<>());
-    }
+//    private static List<Object> sortArrayList(List<Object> arrayList) {
+//        for (int i = 0; i < arrayList.size(); i++) {
+//            for (int j = arrayList.size() - 1; j > i; j--) {
+//                double tmp = (double) arrayList.get(i);
+//                arrayList.set(i, arrayList.get(j));
+//                arrayList.set(j, tmp);
+//            }
+//
+//        }
+//
+//    }
 
 }

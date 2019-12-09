@@ -20,6 +20,7 @@ public class Main {
 
     public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NoSuchFieldException {
         String target = "CheckTriangle";
+//        String target = "MinMax";
 
         String[] filePath = new String[2];
         filePath[0] = "-d=./out";
