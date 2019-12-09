@@ -1,23 +1,15 @@
 package app.algorithm;
 
-import app.CheckTriangle;
 import app.path.Branch;
 import app.signature.Reader;
-import it.itc.etoc.Chromosome;
 import it.itc.etoc.ChromosomeFormer;
-import it.itc.etoc.CustomPopulation;
 import it.itc.etoc.MethodSignature;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class GeneticAlgorithm {
     private ChromosomeFormer chromosomeFormer;
@@ -33,21 +25,21 @@ public class GeneticAlgorithm {
     private static String pathAlreadyHasTestCase = "";
     private static int populationSize = 10;
 
-    public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+    public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) {
         Reader.readSignatures(signFile);
 
         branches.forEach((branch -> {
             if (branch.toString().length() >= 4 && !branch.toString().equals(pathAlreadyHasTestCase)) {
-                System.out.println(branches.toString());
-                System.out.println(branch.toString());
+//                System.out.println(branches.toString());
+//                System.out.println(branch.toString());
                 // GENERATE POPULATION
                 population.clear();
                 generatePopulation();
+//                System.out.println(population.toString());
                 // TEST WITH ALL CHROMOSOME IN POPULATION
-//                System.out.println(selection(branch));
-//                selection(branch);
                 int z = 0;
                 while (selection(branch) == 0 && z <= 2) {
+//                    System.out.println(population.toString());
                     crossover();
                     mutate();
                     selection(branch);
@@ -55,6 +47,9 @@ public class GeneticAlgorithm {
                 }
             }
         }));
+        for (int j = 0; j < result.size(); j++) {
+            System.out.println(result.get(j));
+        }
     }
 
 
@@ -113,17 +108,13 @@ public class GeneticAlgorithm {
                     trace.append(o).append("-");
                 }
                 if (trace.toString().equals(branch.toString())) {
-                    System.out.println(set);
-                    System.out.println(trace);
+//                    System.out.println(set);
+//                    System.out.println(trace);
                     chromosomeX.add(3, 1);
                     pathAlreadyHasTestCase = trace.toString();
                     String resultString = "Input value for path " + branch.toString() + " are: a = " + chromosomeX.get(0) + "; b = " + chromosomeX.get(1) + "; c = " + chromosomeX.get(2);
                     result.add(resultString);
-                    System.out.println(resultString);
                     return 1;
-                } else {
-                    chromosomeX.add(3, 0);
-
                 }
                 clearTrace(testClass);
             }
@@ -135,7 +126,10 @@ public class GeneticAlgorithm {
 
     private static void crossover() {
         Random ran = new Random();
-        for (int i = 0; i < populationSize / 2; i++) {
+        for (int i = 0; i < populationSize / 2; i += 2) {
+            if (i >= populationSize / 2) {
+                i = (populationSize / 2) - 1;
+            }
             int j = i + 1;
             if (j >= populationSize / 2) {
                 j = 0;
@@ -144,8 +138,13 @@ public class GeneticAlgorithm {
             int y = ran.nextInt(3);
             List<Object> simpleChromosomeX = (List<Object>) population.get(i);
             List<Object> simpleChromosomeY = (List<Object>) population.get(j);
-            simpleChromosomeX.add(x, simpleChromosomeY.get(y));
-            simpleChromosomeY.add(y, simpleChromosomeX.get(x));
+            if (j != 0) {
+                double temp = (double) simpleChromosomeX.get(x);
+                simpleChromosomeX.set(x, simpleChromosomeY.get(y));
+                simpleChromosomeY.set(y, temp);
+            }else{
+                simpleChromosomeX.set(x, simpleChromosomeY.get(y));
+            }
         }
     }
 
@@ -157,7 +156,7 @@ public class GeneticAlgorithm {
             int x = ran.nextInt(3);
             double randomValue = min + ran.nextDouble() * (max - min);
             List<Object> simpleChromosome = (List<Object>) population.get(i);
-            simpleChromosome.add(x, randomValue);
+            simpleChromosome.set(x, randomValue);
         }
     }
 }
