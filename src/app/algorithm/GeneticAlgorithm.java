@@ -28,69 +28,33 @@ public class GeneticAlgorithm {
     private static List<Object> populationTemp;
     private static List<Object> simpleChromosomeTemp = new ArrayList<Object>();
     private static List<Object> traces = new ArrayList<Object>();
+    private static List<Object> result = new ArrayList<Object>();
     private static String methodName = "";
-
+    private static String pathAlreadyHasTestCase = "";
+    private static int populationSize = 10;
 
     public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
         Reader.readSignatures(signFile);
-        System.out.println(Reader.classUnderTest);
-        int i = 0;
-        int populationSize = 10;
-//        String methodName = "";
-
-        // Generate population
-        for (int j = 0; j < populationSize; j++) {
-            simpleChromosome = new ArrayList<Object>();
-            for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
-//                System.out.println(m.getName());
-                methodName = m.getName().toString();
-                for (Object p : m.getParameters()) {
-                    generateValueForChromosome(p.toString(), i);
-                    i++;
-                }
-
-                population.add(j, simpleChromosome);
-                i = 0;
-            }
-        }
-
 
         branches.forEach((branch -> {
-            if (branch.toString().length() >= 4) {
-                // Run population
-//                try {
-                double fitnessPoint = 0;
-                for (int z = 0; z < populationSize; z++) {
-                    List<Object> chromosomeX = (List<Object>) population.get(z);
-                    fitnessPoint = computeFitness(chromosomeX);
-                    chromosomeX.add(3, fitnessPoint);
-//                        Class<?> testClass = Class.forName(Reader.classUnderTest);
-//                        Method m = testClass.getMethod(methodName, double.class, double.class, double.class);
-//                        m.invoke(null, chromosomeX.get(0), chromosomeX.get(1), chromosomeX.get(2));
-//                        Method n = testClass.getMethod("getTrace");
-//                        java.util.Set set = (Set) n.invoke(null);
-//                        System.out.println(set);
-//                        clearTrace(testClass);
+            if (branch.toString().length() >= 4 && !branch.toString().equals(pathAlreadyHasTestCase)) {
+                System.out.println(branches.toString());
+                System.out.println(branch.toString());
+                // GENERATE POPULATION
+                population.clear();
+                generatePopulation();
+                // TEST WITH ALL CHROMOSOME IN POPULATION
+//                System.out.println(selection(branch));
+//                selection(branch);
+                int z = 0;
+                while (selection(branch) == 0 && z <= 2) {
+                    crossover();
+                    mutate();
+                    selection(branch);
+                    z++;
                 }
-
-//                } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                }
             }
         }));
-    }
-
-    private static double computeFitness(List<Object> chromosomeX) {
-        double a, b, c;
-        double x, y, z;
-        x = (double) chromosomeX.get(0);
-        y = (double) chromosomeX.get(1);
-        z = (double) chromosomeX.get(2);
-        a = z - (x + y);
-        b = y - (x + z);
-        c = x - (y + z);
-        double smallest = Math.min(a, Math.min(b, c));
-        return smallest;
     }
 
 
@@ -116,6 +80,87 @@ public class GeneticAlgorithm {
         f.setAccessible(true);
         f.set(null, new HashSet<>());
     }
+
+    private static void generatePopulation() {
+        int i = 0;
+        for (int j = 0; j < populationSize; j++) {
+            simpleChromosome = new ArrayList<Object>();
+            for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
+//                System.out.println(m.getName());
+                methodName = m.getName().toString();
+                for (Object p : m.getParameters()) {
+                    generateValueForChromosome(p.toString(), i);
+                    i++;
+                }
+                population.add(j, simpleChromosome);
+                i = 0;
+            }
+        }
+    }
+
+    private static int selection(Branch branch) {
+        try {
+            int testTimes = 0;
+            for (int z = 0; z < populationSize; z++) {
+                StringBuilder trace = new StringBuilder();
+                List<Object> chromosomeX = (List<Object>) population.get(z);
+                Class<?> testClass = Class.forName(Reader.classUnderTest);
+                Method m = testClass.getMethod(methodName, double.class, double.class, double.class);
+                m.invoke(null, chromosomeX.get(0), chromosomeX.get(1), chromosomeX.get(2));
+                Method n = testClass.getMethod("getTrace");
+                java.util.Set set = (Set) n.invoke(null);
+                for (Object o : set) {
+                    trace.append(o).append("-");
+                }
+                if (trace.toString().equals(branch.toString())) {
+                    System.out.println(set);
+                    System.out.println(trace);
+                    chromosomeX.add(3, 1);
+                    pathAlreadyHasTestCase = trace.toString();
+                    String resultString = "Input value for path " + branch.toString() + " are: a = " + chromosomeX.get(0) + "; b = " + chromosomeX.get(1) + "; c = " + chromosomeX.get(2);
+                    result.add(resultString);
+                    System.out.println(resultString);
+                    return 1;
+                } else {
+                    chromosomeX.add(3, 0);
+
+                }
+                clearTrace(testClass);
+            }
+        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private static void crossover() {
+        Random ran = new Random();
+        for (int i = 0; i < populationSize / 2; i++) {
+            int j = i + 1;
+            if (j >= populationSize / 2) {
+                j = 0;
+            }
+            int x = ran.nextInt(3);
+            int y = ran.nextInt(3);
+            List<Object> simpleChromosomeX = (List<Object>) population.get(i);
+            List<Object> simpleChromosomeY = (List<Object>) population.get(j);
+            simpleChromosomeX.add(x, simpleChromosomeY.get(y));
+            simpleChromosomeY.add(y, simpleChromosomeX.get(x));
+        }
+    }
+
+    private static void mutate() {
+        Random ran = new Random();
+        int min = 1;
+        int max = 100;
+        for (int i = populationSize / 2; i < populationSize; i++) {
+            int x = ran.nextInt(3);
+            double randomValue = min + ran.nextDouble() * (max - min);
+            List<Object> simpleChromosome = (List<Object>) population.get(i);
+            simpleChromosome.add(x, randomValue);
+        }
+    }
+
 
     private void initPopulation(String signFile) {
         chromosomeFormer = new ChromosomeFormer();
@@ -200,17 +245,4 @@ public class GeneticAlgorithm {
         chrom = chrom.replaceAll("\\$y", "\\$x");
         return chrom;
     }
-
-//    private static List<Object> sortArrayList(List<Object> arrayList) {
-//        for (int i = 0; i < arrayList.size(); i++) {
-//            for (int j = arrayList.size() - 1; j > i; j--) {
-//                double tmp = (double) arrayList.get(i);
-//                arrayList.set(i, arrayList.get(j));
-//                arrayList.set(j, tmp);
-//            }
-//
-//        }
-//
-//    }
-
 }
