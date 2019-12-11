@@ -6,22 +6,22 @@ import app.path.PathGenerator;
 import app.path.PathReader;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-
-import app.signature.Reader;
-import it.itc.etoc.MethodSignature;
+import java.util.ArrayList;
 
 public class Main {
     public static String classUnderTest;
 
-    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NoSuchFieldException {
+    public static void main(String[] args) throws IOException {
         String target = "CheckTriangle";
-//        String target = "MinMax";
+        // CREATE EMPTY OJ FILE
+        File ojFile = new File("src/app/" + target + ".oj");
+        ojFile.createNewFile();
+        PrintWriter printWriter = new PrintWriter(ojFile);
+        printWriter.println("");
 
+        generateOjFile(target);
         String[] filePath = new String[2];
         filePath[0] = "-d=./out";
         filePath[1] = "src/app/" + target + ".oj";
@@ -36,7 +36,6 @@ public class Main {
 //        CheckTriangle.check(2, 3, 4);
 //        java.util.Set set = CheckTriangle.getTrace();
 //        System.out.println(set);
-
 
 
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign", branches);
@@ -59,5 +58,40 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void generateOjFile(String target) throws IOException {
+
+        int needAddImport = 0;
+
+        String filePath = "src/app/" + target + ".java";
+//        File javaFile = new File(filePath);
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                FileWriter fileWriter = new FileWriter("src/app/" + target + ".oj", true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+                if (line.contains("class " + target)) {
+                    if (line.substring(line.length() - 1).equals("{")) {
+                        line = line.substring(0, line.length() - 1) + "instantiates BranchInstrumentor {";
+                    } else {
+                        line = line + " instantiates BranchInstrumentor";
+                    }
+                }
+                if (line.contains(";") && needAddImport != 2) {
+                    needAddImport = 1;
+                }
+
+                bufferedWriter.write(line + "\n");
+
+                if (needAddImport == 1) {
+                    bufferedWriter.write("import it.itc.etoc.*;\n");
+                    needAddImport = 2;
+                }
+                bufferedWriter.close();
+            }
+        }
+
     }
 }
