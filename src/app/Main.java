@@ -19,6 +19,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         String target = "CheckTriangle";
 
+        generateOjFile(target);
+
         String[] filePath = new String[2];
         filePath[0] = "-d=./out";
         filePath[1] = "src/app/" + target + ".oj";
@@ -47,6 +49,45 @@ public class Main {
                 System.out.println("");
             }
         }
+    }
+
+    private static void generateOjFile(String target) throws IOException {
+        File ojFile = new File("src/app/" + target + ".oj");
+        ojFile.createNewFile();
+        PrintWriter printWriter = new PrintWriter(ojFile);
+        printWriter.println("");
+
+        int needAddImport = 0;
+
+        String filePath = "src/app/" + target + ".java";
+//        File javaFile = new File(filePath);
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                FileWriter fileWriter = new FileWriter("src/app/" + target + ".oj", true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+                if (line.contains("class " + target)) {
+                    if (line.substring(line.length() - 1).equals("{")) {
+                        line = line.substring(0, line.length() - 1) + "instantiates BranchInstrumentor {";
+                    } else {
+                        line = line + " instantiates BranchInstrumentor";
+                    }
+                }
+                if (line.contains(";") && needAddImport != 2) {
+                    needAddImport = 1;
+                }
+
+                bufferedWriter.write(line + "\n");
+
+                if (needAddImport == 1) {
+                    bufferedWriter.write("import it.itc.etoc.*;\n");
+                    needAddImport = 2;
+                }
+                bufferedWriter.close();
+            }
+        }
+
     }
 
     private static void editSignatureFile(String fileName) {
