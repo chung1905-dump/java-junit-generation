@@ -17,7 +17,10 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String target = "CheckTriangle";
+        if (args.length != 1) {
+            throw new IllegalArgumentException("Require one argument. E.g: java app.Main CheckTriangle");
+        }
+        String target = args[0];
 
         String ojFilePath = generateOjFile(target);
 
@@ -53,12 +56,12 @@ public class Main {
 
     private static String generateOjFile(String target) throws IOException {
         File ojFile = new File(target + ".oj");
+        if (ojFile.exists() && !ojFile.delete()) {
+            throw new IOException("Failed to delete OJ file.");
+        }
         if (!ojFile.createNewFile()) {
             throw new IOException("Failed to create OJ file.");
         }
-        PrintWriter printWriter = new PrintWriter(ojFile);
-        printWriter.println("");
-
         int needAddImport = 0;
 
         final String filePath = "src/app/" + target + ".java";

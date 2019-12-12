@@ -8,7 +8,7 @@ compile:
 	javac -d ./out -sourcepath ./src $(CP_LIB_FLAG) ./src/app/Main.java
 
 run:
-	java $(CP_LIB_FLAG):./out app.Main
+	java $(CP_LIB_FLAG):./out app.Main CheckTriangle
 
 clean:
 	rm -rf out/* CheckTriangle.path CheckTriangle.sign CheckTriangle.tgt
