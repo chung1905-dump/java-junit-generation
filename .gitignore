@@ -2,6 +2,7 @@ out/*
 *.path
 *.sign
 *.tgt
+*.oj
 
 .classpath
 .project

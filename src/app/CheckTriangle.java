@@ -26,16 +26,4 @@ public class CheckTriangle {
             System.out.println("The Triangle is Not a Valid Triangle");
         }
     }
-
-    private static java.util.Set trace = new java.util.HashSet();
-
-    public static void newTrace()
-    {
-        trace = new java.util.HashSet();
-    }
-
-    public static java.util.Set getTrace()
-    {
-        return trace;
-    }
 }

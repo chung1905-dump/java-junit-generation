@@ -19,11 +19,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
         String target = "CheckTriangle";
 
-        generateOjFile(target);
+        String ojFilePath = generateOjFile(target);
 
         String[] filePath = new String[2];
         filePath[0] = "-d=./out";
-        filePath[1] = "src/app/" + target + ".oj";
+        filePath[1] = ojFilePath;
 
         PathGenerator pathGenerator = new PathGenerator();
         pathGenerator.generate(filePath);
@@ -51,20 +51,22 @@ public class Main {
         }
     }
 
-    private static void generateOjFile(String target) throws IOException {
-        File ojFile = new File("src/app/" + target + ".oj");
-        ojFile.createNewFile();
+    private static String generateOjFile(String target) throws IOException {
+        File ojFile = new File(target + ".oj");
+        if (!ojFile.createNewFile()) {
+            throw new IOException("Failed to create OJ file.");
+        }
         PrintWriter printWriter = new PrintWriter(ojFile);
         printWriter.println("");
 
         int needAddImport = 0;
 
-        String filePath = "src/app/" + target + ".java";
+        final String filePath = "src/app/" + target + ".java";
 //        File javaFile = new File(filePath);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                FileWriter fileWriter = new FileWriter("src/app/" + target + ".oj", true);
+                FileWriter fileWriter = new FileWriter(ojFile.getPath(), true);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 if (line.contains("class " + target)) {
@@ -88,6 +90,7 @@ public class Main {
             }
         }
 
+        return ojFile.getPath();
     }
 
     private static void editSignatureFile(String fileName) {
