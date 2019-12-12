@@ -30,20 +30,18 @@ public class GeneticAlgorithm {
 
         branches.forEach((branch -> {
             if (branch.toString().length() >= 4 && !branch.toString().equals(pathAlreadyHasTestCase)) {
-//                System.out.println(branches.toString());
-//                System.out.println(branch.toString());
-                // GENERATE POPULATION
-                population.clear();
-                generatePopulation();
-//                System.out.println(population.toString());
-                // TEST WITH ALL CHROMOSOME IN POPULATION
-                int z = 0;
-                while (selection(branch) == 0 && z <= 2) {
-//                    System.out.println(population.toString());
-                    crossover();
-                    mutate();
-                    selection(branch);
-                    z++;
+                for (MethodSignature methodSignature : Reader.methods.get(Reader.classUnderTest)) {
+                    // GENERATE POPULATION
+                    population.clear();
+                    generatePopulation(methodSignature);
+                    // TEST WITH ALL CHROMOSOME IN POPULATION
+                    int z = 0;
+                    while (selection(branch, methodSignature) == 0 && z <= 2) {
+                        crossover();
+                        mutate();
+                        selection(branch, methodSignature);
+                        z++;
+                    }
                 }
             }
         }));
@@ -70,55 +68,53 @@ public class GeneticAlgorithm {
         }
     }
 
-    private static void clearTrace(Class<?> clazz) throws NoSuchFieldException, IllegalAccessException {
-        Field f = clazz.getDeclaredField("trace");
-        f.setAccessible(true);
-        f.set(null, new HashSet<>());
+    private static void clearTrace(Class<?> testClass) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        testClass.getMethod("newTrace").invoke(null);
     }
 
-    private static void generatePopulation() {
+    private static void generatePopulation(MethodSignature methodSignature) {
         int i = 0;
         for (int j = 0; j < populationSize; j++) {
             simpleChromosome = new ArrayList<Object>();
-            for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
-//                System.out.println(m.getName());
-                methodName = m.getName().toString();
-                for (Object p : m.getParameters()) {
-                    generateValueForChromosome(p.toString(), i);
-                    i++;
-                }
-                population.add(j, simpleChromosome);
-                i = 0;
+            methodName = methodSignature.getName();
+            for (Object p : methodSignature.getParameters()) {
+                generateValueForChromosome(p.toString(), i);
+                i++;
             }
+            population.add(j, simpleChromosome);
+            i = 0;
         }
     }
 
-    private static int selection(Branch branch) {
+    private static int selection(Branch branch, MethodSignature methodSignature) {
         try {
             int testTimes = 0;
             for (int z = 0; z < populationSize; z++) {
                 StringBuilder trace = new StringBuilder();
                 List<Object> chromosomeX = (List<Object>) population.get(z);
                 Class<?> testClass = Class.forName(Reader.classUnderTest);
-                Method m = testClass.getMethod(methodName, double.class, double.class, double.class);
-                m.invoke(null, chromosomeX.get(0), chromosomeX.get(1), chromosomeX.get(2));
+                Method m = testClass.getMethod(methodName, stringToClass(methodSignature.getParameters().toArray()));
+                System.out.println(chromosomeX.toString());
+                m.invoke(null, chromosomeX.toArray());
                 Method n = testClass.getMethod("getTrace");
                 java.util.Set set = (Set) n.invoke(null);
                 for (Object o : set) {
                     trace.append(o).append("-");
                 }
+                    System.out.println(trace.toString());
+                    System.out.println(branch.toString());
+
                 if (trace.toString().equals(branch.toString())) {
-//                    System.out.println(set);
-//                    System.out.println(trace);
-                    chromosomeX.add(3, 1);
+//                    chromosomeX.add(3, 1);
+
                     pathAlreadyHasTestCase = trace.toString();
-                    String resultString = "Input value for path " + branch.toString() + " are: a = " + chromosomeX.get(0) + "; b = " + chromosomeX.get(1) + "; c = " + chromosomeX.get(2);
+                    String resultString = "Input value for path " + branch.toString() + " are: " + chromosomeX.toString();
                     result.add(resultString);
                     return 1;
                 }
                 clearTrace(testClass);
             }
-        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
+        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return 0;
@@ -142,7 +138,7 @@ public class GeneticAlgorithm {
                 double temp = (double) simpleChromosomeX.get(x);
                 simpleChromosomeX.set(x, simpleChromosomeY.get(y));
                 simpleChromosomeY.set(y, temp);
-            }else{
+            } else {
                 simpleChromosomeX.set(x, simpleChromosomeY.get(y));
             }
         }
@@ -159,4 +155,29 @@ public class GeneticAlgorithm {
             simpleChromosome.set(x, randomValue);
         }
     }
+
+    private static Class<?>[] stringToClass(Object[] strings) {
+        Class<?>[] classes = new Class[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            Class<?> c;
+            switch (strings[i].toString()) {
+                case "double":
+                    c = double.class;
+                    break;
+                case "int":
+                    c = int.class;
+                    break;
+                case "boolean":
+                    c = boolean.class;
+                    break;
+                default:
+                    // Non-support type
+                    c = null;
+            }
+            classes[i] = c;
+        }
+
+        return classes;
+    }
+
 }
