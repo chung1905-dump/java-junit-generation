@@ -28,7 +28,7 @@ public class Main {
 
         PathGenerator pathGenerator = new PathGenerator();
         pathGenerator.generate(filePath);
-        editSignatureFile(target + ".sign");
+        editSignatureFile(target + ".sign", target);
 
 
         PathReader pathReader = new PathReader();
@@ -41,7 +41,7 @@ public class Main {
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign", branches);
     }
 
-    private static void editSignatureFile(String fileName) {
+    private static void editSignatureFile(String fileName, String target) {
         try {
             File file = new File(fileName);
             String content = new String(Files.readAllBytes(Paths.get(fileName)));
@@ -50,7 +50,7 @@ public class Main {
             PrintWriter printWriter = new PrintWriter(file);
             printWriter.print("");
 //            bufferedWriter.write("java.lang.Double.Double(double)\n");
-            bufferedWriter.write("app.CheckTriangle.CheckTriangle()\n");
+            bufferedWriter.write("app." + target + "." + target + "()\n");
             bufferedWriter.write(content);
             bufferedWriter.write("#");
             bufferedWriter.newLine();

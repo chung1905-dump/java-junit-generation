@@ -17,8 +17,6 @@ public class GeneticAlgorithm {
     private static Random randomGenerator = new Random();
     private static List<Object> simpleChromosome;
     private static List<Object> population = new ArrayList<Object>();
-    private static List<Object> populationTemp;
-    private static List<Object> simpleChromosomeTemp = new ArrayList<Object>();
     private static List<Object> traces = new ArrayList<Object>();
     private static List<Object> result = new ArrayList<Object>();
     private static String methodName = "";
@@ -89,6 +87,8 @@ public class GeneticAlgorithm {
     private static int selection(Branch branch, MethodSignature methodSignature) {
         try {
             int testTimes = 0;
+            int point = 0;
+            boolean needChromosome = true;
             for (int z = 0; z < populationSize; z++) {
                 StringBuilder trace = new StringBuilder();
                 List<Object> chromosomeX = (List<Object>) population.get(z);
@@ -101,19 +101,33 @@ public class GeneticAlgorithm {
                 for (Object o : set) {
                     trace.append(o).append("-");
                 }
-                    System.out.println(trace.toString());
-                    System.out.println(branch.toString());
-
-                if (trace.toString().equals(branch.toString())) {
-//                    chromosomeX.add(3, 1);
-
-                    pathAlreadyHasTestCase = trace.toString();
-                    String resultString = "Input value for path " + branch.toString() + " are: " + chromosomeX.toString();
-                    result.add(resultString);
-                    return 1;
+                computeFitnes(trace, branch, chromosomeX);
+                int chromosomePoint = (int) chromosomeX.get(chromosomeX.size() - 1);
+                if (chromosomePoint > point) {
+                    point = chromosomePoint;
                 }
+//                chromosomeX.remove(chromosomeX.size() - 1);
+//                if (trace.toString().equals(branch.toString())) {
+////                if (chosenChromosome != null) {
+//                    pathAlreadyHasTestCase = trace.toString();
+//                    String resultString = "Input value for path " + branch.toString() + " are: " + chromosomeX.toString();
+//                    result.add(resultString);
+//                    return 1;
+//                }
                 clearTrace(testClass);
             }
+            for (Object o : population) {
+                List<Object> chromosome = (List<Object>) o;
+                int chromosomePoint = (int) chromosome.get(chromosome.size() - 1);
+                chromosome.remove(chromosome.size() - 1);
+                if (chromosomePoint != 0 && chromosomePoint == point && needChromosome && !pathAlreadyHasTestCase.equals(branch.toString())) {
+                    pathAlreadyHasTestCase = branch.toString();
+                    String resultString = "Input value for path " + branch.toString() + " are: " + chromosome.toString();
+                    result.add(resultString);
+                    needChromosome = false;
+                }
+            }
+
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -154,6 +168,22 @@ public class GeneticAlgorithm {
             List<Object> simpleChromosome = (List<Object>) population.get(i);
             simpleChromosome.set(x, randomValue);
         }
+    }
+
+    private static void computeFitnes(StringBuilder trace, Branch branch, List<Object> chromosomeX) {
+        int point = 0;
+        String[] traceArray = trace.toString().split("-");
+        String[] branchArray = branch.toString().split("-");
+        if (traceArray.length == branchArray.length) {
+            for (int i = 0; i < branchArray.length; i++) {
+                for (int j = 0; j < traceArray.length; j++) {
+                    if (traceArray[j].equals(branchArray[i])) {
+                        point += 1;
+                    }
+                }
+            }
+        }
+        chromosomeX.add(point);
     }
 
     private static Class<?>[] stringToClass(Object[] strings) {

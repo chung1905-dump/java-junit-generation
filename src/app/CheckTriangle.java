@@ -6,18 +6,18 @@ public class CheckTriangle {
             if ((l1 + l3) > l2) {
                 if (l2 + l3 > l1) {
                     boolean isTriangle = true;
-                    System.out.println("\nThe Triangle is a Valid Triangle\n\n");
+//                    System.out.println("\nThe Triangle is a Valid Triangle\n\n");
                 } else {
                     boolean isTriangle = false;
-                    System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+//                    System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
                 }
             } else {
                 boolean isTriangle = false;
-                System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+//                System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
             }
         } else {
             boolean isTriangle = false;
-            System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
+//            System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
         }
     }
 
@@ -28,22 +28,22 @@ public class CheckTriangle {
                 if (c < 30) {
                     if (d > 5) {
                         String x = "good varible";
-                        System.out.println(x);
+//                        System.out.println(x);
                     } else {
                         String x = "d less than 5";
-                        System.out.println(x);
+//                        System.out.println(x);
                     }
                 } else {
                     String x = "C less than 30";
-                    System.out.println(x);
+//                    System.out.println(x);
                 }
             } else {
                 String x = "b less than 5";
-                System.out.println(x);
+//                System.out.println(x);
             }
         } else {
             String x = "a is big";
-            System.out.println(x);
+//            System.out.println(x);
         }
     }
 }
