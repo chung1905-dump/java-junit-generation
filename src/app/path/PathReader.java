@@ -18,8 +18,8 @@ public class PathReader {
             Scanner myReader = new Scanner(fileContainsPath);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
-                String end = data.replace(data.substring(data.indexOf(":")), "");
-                endNodes.add(end);
+                String endNode = data.replace(data.substring(data.indexOf(":")), "");
+                endNodes.add(endNode);
                 normalNodes.add(data.substring(data.indexOf(":") + 1));
                 ArrayList<Integer> nodeData = reverse_transform(data.split(":|\\s+"));
 
