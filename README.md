@@ -5,14 +5,12 @@
 2. Etoc: http://star.fbk.eu/etoc/
 3. JDK
 
-# Components
-* [x]  Branch instrument.
-Example:
-```bash
-java --class-path /home/nguyenducchung/Desktop/tc-generator/OpenJava_1.1/classes:/home/nguyenducchung/Desktop/tc-generator/etoc/etoc.jar:/home/nguyenducchung/Desktop/tc-generator/etoc/examples/BinaryTree/instrumented openjava.ojc.Main BinaryTree.oj
+# How to run
 ```
-* [ ]  Read paths
-* [ ]  Generate testcase for each path
-* PSO
-  * Init particles
-* GA
+make
+```
+
+# Known issues
+1. Only support int, double type in arguments.
+2. Only non-arg constructor
+3. ...
