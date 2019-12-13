@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Swarm<E> {
     public int currentGeneration = 0;
-    public int maxGeneration = 10;
+    public int maxGeneration = 50;
     public int size = 10;
     private double highestScore = -1;
     private List<Particle<E>> particles;

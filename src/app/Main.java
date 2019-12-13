@@ -30,7 +30,7 @@ public class Main {
 
         PathGenerator pathGenerator = new PathGenerator();
         pathGenerator.generate(filePath);
-        editSignatureFile(target + ".sign");
+        editSignatureFile(target + ".sign", target);
         Reader.readSignatures(target + ".sign");
 
         PathReader pathReader = new PathReader();
@@ -65,7 +65,6 @@ public class Main {
         int needAddImport = 0;
 
         final String filePath = "src/app/" + target + ".java";
-//        File javaFile = new File(filePath);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -96,7 +95,7 @@ public class Main {
         return ojFile.getPath();
     }
 
-    private static void editSignatureFile(String fileName) {
+    private static void editSignatureFile(String fileName, String target) {
         try {
             File file = new File(fileName);
             String content = new String(Files.readAllBytes(Paths.get(fileName)));
@@ -105,7 +104,7 @@ public class Main {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             PrintWriter printWriter = new PrintWriter(file);
             printWriter.print("");
-            bufferedWriter.write("app.CheckTriangle.CheckTriangle()\n");
+            bufferedWriter.write("app." + target + "." + target + "()\n");
             bufferedWriter.write(content);
             bufferedWriter.write("#");
             bufferedWriter.newLine();
