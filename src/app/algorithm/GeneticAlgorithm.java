@@ -21,7 +21,7 @@ public class GeneticAlgorithm {
     private static List<Object> result = new ArrayList<Object>();
     private static String methodName = "";
     private static String pathAlreadyHasTestCase = "";
-    private static int populationSize = 10;
+    private static int populationSize = 200;
     private static int maxPoint = 0;
 
     public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) {
@@ -35,11 +35,11 @@ public class GeneticAlgorithm {
                     generatePopulation(methodSignature);
                     // TEST WITH ALL CHROMOSOME IN POPULATION
                     int z = 0;
-                    while (selection(branch, methodSignature) == 0 && z < 1000) {
+                    while (selection(branch, methodSignature, z) == 0 && z < 100) {
                         sortPopulation();
                         crossover();
                         mutate();
-                        selection(branch, methodSignature);
+                        selection(branch, methodSignature, z);
                         z++;
                     }
                 }
@@ -85,7 +85,7 @@ public class GeneticAlgorithm {
         }
     }
 
-    private static int selection(Branch branch, MethodSignature methodSignature) {
+    private static int selection(Branch branch, MethodSignature methodSignature, int difficulty) {
         try {
             int point = 0;
             for (int z = 0; z < populationSize; z++) {
@@ -111,7 +111,9 @@ public class GeneticAlgorithm {
                 int chromosomePoint = chromosome.getChromosomePoint();
                 if (chromosomePoint != 0 && chromosomePoint == point && chromosomePoint == maxPoint && !pathAlreadyHasTestCase.equals(branch.toString())) {
                     pathAlreadyHasTestCase = branch.toString();
-                    String resultString = "Input value for path " + branch.toString() + " are: " + chromosome.getChromoSome().toString();
+                    difficulty = difficulty + 1;
+                    String resultString = "Input value for path " + branch.toString() + " are: " + chromosome.getChromoSome().toString() + "---"
+                            + "Dificulty: " + difficulty;
                     result.add(resultString);
                     return 1;
                 }
