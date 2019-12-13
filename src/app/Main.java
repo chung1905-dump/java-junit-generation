@@ -9,6 +9,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     public static String classUnderTest;
@@ -39,6 +41,7 @@ public class Main {
 
 
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign", branches);
+//        readTargetFile(target);
     }
 
     private static void editSignatureFile(String fileName, String target) {
@@ -93,5 +96,32 @@ public class Main {
             }
         }
 
+    }
+
+    private static void readTargetFile(String target) {
+        String filePath =target + ".tgt";
+        try {
+            String s;
+            Pattern p = Pattern.compile("([^\\s]+)\\s*:\\s*(.*)");
+            BufferedReader in = new BufferedReader(new FileReader(filePath));
+            while ((s = in.readLine()) != null) {
+                Matcher m = p.matcher(s);
+                if (!m.find()) continue;
+                String method = m.group(1);
+//                MethodTarget tgt = new MethodTarget(method);
+                String[] branches = m.group(2).split(",");
+                for (int i = 0; i < branches.length; i++) {
+                    int n = Integer.parseInt(branches[i].trim());
+//                    tgt.addBranch(n);
+                }
+//                targets.add(tgt);
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Wrong format file: " + filePath);
+            System.exit(1);
+        } catch (IOException e) {
+            System.err.println("IO error: " + filePath);
+            System.exit(1);
+        }
     }
 }

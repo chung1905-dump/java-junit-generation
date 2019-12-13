@@ -6,18 +6,14 @@ public class CheckTriangle {
             if ((l1 + l3) > l2) {
                 if (l2 + l3 > l1) {
                     boolean isTriangle = true;
-//                    System.out.println("\nThe Triangle is a Valid Triangle\n\n");
                 } else {
                     boolean isTriangle = false;
-//                    System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
                 }
             } else {
                 boolean isTriangle = false;
-//                System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
             }
         } else {
             boolean isTriangle = false;
-//            System.out.println("\nThe Triangle is Not a Valid Triangle\n\n");
         }
     }
 
@@ -26,7 +22,7 @@ public class CheckTriangle {
         if (a > 20) {
             if (b > 5) {
                 if (c < 30) {
-                    if (d > 5) {
+                    if (d < 2) {
                         String x = "good varible";
 //                        System.out.println(x);
                     } else {
