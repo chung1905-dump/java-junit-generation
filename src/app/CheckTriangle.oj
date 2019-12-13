@@ -1,0 +1,46 @@
+package app;
+import it.itc.etoc.*;
+
+public class CheckTriangle instantiates BranchInstrumentor {
+    public static void check(double l1, double l2, double l3) {
+        if ((l1 + l2) > l3) {
+            if ((l1 + l3) > l2) {
+                if (l2 + l3 > l1) {
+                    boolean isTriangle = true;
+                } else {
+                    boolean isTriangle = false;
+                }
+            } else {
+                boolean isTriangle = false;
+            }
+        } else {
+            boolean isTriangle = false;
+        }
+    }
+
+    public static void anotherCheck(double a, double b, double c, double d) {
+
+        if (a > 20) {
+            if (b > 5) {
+                if (c < 30) {
+                    if (d < 2) {
+                        String x = "good varible";
+//                        System.out.println(x);
+                    } else {
+                        String x = "d less than 5";
+//                        System.out.println(x);
+                    }
+                } else {
+                    String x = "C less than 30";
+//                    System.out.println(x);
+                }
+            } else {
+                String x = "b less than 5";
+//                System.out.println(x);
+            }
+        } else {
+            String x = "a is big";
+//            System.out.println(x);
+        }
+    }
+}
