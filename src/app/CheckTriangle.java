@@ -17,11 +17,11 @@ public class CheckTriangle {
         }
     }
 
-    public static void anotherCheck(double a, double b, double c, double d) {
+    public static void anotherCheck(int a, int b, int c, int d) {
         if (a > 20) {
             if (b > 5) {
                 if (c < 30) {
-                    if (d > 5) {
+                    if (d < 2) {
                         String x = "good varible";
                     } else {
                         String x = "d less than 5";

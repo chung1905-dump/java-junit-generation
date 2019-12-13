@@ -69,10 +69,10 @@ public class PSO {
         for (int i = 0; i < currentV.size(); i++) {
             Double rand1 = (Double) _random("double", 0, 1);
             Double rand2 = (Double) _random("double", 0, 1);
-            Double v = (Double) currentV.get(i);
-            Double pB = (Double) pBest.get(i);
-            Double gB = (Double) gBest.get(i);
-            Double pr = (Double) present.get(i);
+            double v = Double.parseDouble(currentV.get(i).toString());
+            double pB = Double.parseDouble(pBest.get(i).toString());
+            double gB = Double.parseDouble(gBest.get(i).toString());
+            double pr = Double.parseDouble(present.get(i).toString());
             Double newSmallV = v + c1 * rand1 * (pB - pr) + c2 * rand2 * (gB - pr);
             newVelocity.add(newSmallV);
         }
@@ -86,8 +86,8 @@ public class PSO {
         List<Object> present = p.getPosition();
 
         for (int i = 0; i < currentV.size(); i++) {
-            Double v = (Double) currentV.get(i);
-            Double pr = (Double) present.get(i);
+            double v = Double.parseDouble(currentV.get(i).toString());
+            double pr = Double.parseDouble(present.get(i).toString());
             Double newSmallP = pr + v;
             newPostition.add(newSmallP);
         }
@@ -130,7 +130,7 @@ public class PSO {
         if (varType.equals("double") || varType.equals("float")) {
             return min + r.nextDouble() * (max - min);
         } else if (varType.equals("int")) {
-            return min + r.nextInt() * (max - min);
+            return (int) (min + r.nextDouble() * (max - min));
         } else if (varType.equals("boolean")) {
             return r.nextBoolean();
         } else {

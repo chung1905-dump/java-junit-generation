@@ -6,6 +6,7 @@ import app.path.Branch;
 import app.path.PathGenerator;
 import app.path.PathReader;
 import app.signature.Reader;
+import app.signature.tgt.TgtReader;
 import it.itc.etoc.MethodSignature;
 
 import java.io.File;
@@ -14,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -36,10 +39,17 @@ public class Main {
         PathReader pathReader = new PathReader();
         ArrayList<Branch> branches = pathReader.read(target + ".path");
 
+        Map<Integer, Set<Integer>> branchesFromTgt = TgtReader.readTargetFile(target + ".tgt");
+
         for (Branch b : branches) {
             for (MethodSignature m : Reader.methods.get(Reader.classUnderTest)) {
+                int methodHash = TgtReader.hashMethodSignature(m.getName(), m.getParameters().toArray());
+                Set<Integer> bSet = branchesFromTgt.get(methodHash);
+                if (!bSet.containsAll(b.toSet())) {
+                    continue;
+                }
+
                 System.out.println("Branch: " + b);
-                // TODO: quick check if method m contains target branch (file .tgt)
                 PSO pso = new PSO();
                 Swarm<?> s = pso.initSwarm(m);
                 while (s.currentGeneration < s.maxGeneration && s.getHighestScore() < 1) {
@@ -47,7 +57,7 @@ public class Main {
                     pso.updateSwarm();
                     s.currentGeneration++;
                 }
-                System.out.println("Highscore: " + s.getHighestScore());
+                System.out.println("Highscore: " + s.getHighestScore() + " at K" + s.currentGeneration);
                 System.out.println("Best particle: " + s.getgBest());
                 System.out.println("");
             }
