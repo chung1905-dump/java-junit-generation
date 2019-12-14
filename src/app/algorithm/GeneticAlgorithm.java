@@ -21,7 +21,7 @@ public class GeneticAlgorithm {
     private static List<Object> result = new ArrayList<Object>();
     private static String methodName = "";
     private static String pathAlreadyHasTestCase = "";
-    private static int populationSize = 200;
+    private static int populationSize = 300;
     private static int maxPoint = 0;
 
     public GeneticAlgorithm(String signFile, ArrayList<Branch> branches) {
