@@ -18,29 +18,24 @@ public class CheckTriangle instantiates BranchInstrumentor {
         }
     }
 
-    public static void anotherCheck(double a, double b, double c, double d) {
+    public static void anotherCheck(int a, int b, int c, int d) {
 
         if (a > 20) {
             if (b > 5) {
                 if (c < 30) {
                     if (d < 2) {
                         String x = "good varible";
-//                        System.out.println(x);
                     } else {
                         String x = "d less than 5";
-//                        System.out.println(x);
                     }
                 } else {
                     String x = "C less than 30";
-//                    System.out.println(x);
                 }
             } else {
                 String x = "b less than 5";
-//                System.out.println(x);
             }
         } else {
             String x = "a is big";
-//            System.out.println(x);
         }
     }
 }

@@ -1,14 +1,18 @@
 package app;
 
+import app.algorithm.ChromosomeX;
 import app.algorithm.GeneticAlgorithm;
 import app.path.Branch;
 import app.path.PathGenerator;
 import app.path.PathReader;
+import app.signature.TgtReader;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,13 +39,13 @@ public class Main {
 
         PathReader pathReader = new PathReader();
         ArrayList<Branch> branches = pathReader.read(target + ".path");
-//        CheckTriangle.check(2, 3, 4);
-//        java.util.Set set = CheckTriangle.getTrace();
-//        System.out.println(set);
 
 
-        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign", branches);
-//        readTargetFile(target);
+        Result algorithmResults = new Result();
+        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(target + ".sign", branches, target + ".tgt", algorithmResults);
+
+        // CREATE TEST FILE
+        generateTestFile(target, algorithmResults);
     }
 
     private static void editSignatureFile(String fileName, String target) {
@@ -95,33 +99,50 @@ public class Main {
                 bufferedWriter.close();
             }
         }
-
     }
 
-    private static void readTargetFile(String target) {
-        String filePath =target + ".tgt";
-        try {
-            String s;
-            Pattern p = Pattern.compile("([^\\s]+)\\s*:\\s*(.*)");
-            BufferedReader in = new BufferedReader(new FileReader(filePath));
-            while ((s = in.readLine()) != null) {
-                Matcher m = p.matcher(s);
-                if (!m.find()) continue;
-                String method = m.group(1);
-//                MethodTarget tgt = new MethodTarget(method);
-                String[] branches = m.group(2).split(",");
-                for (int i = 0; i < branches.length; i++) {
-                    int n = Integer.parseInt(branches[i].trim());
-//                    tgt.addBranch(n);
+    private static void generateTestFile(String target, Result algorithmResults) throws IOException {
+        String filePath = "src/app/" + target + "Test.java";
+        File testFile = new File(filePath);
+        testFile.createNewFile();
+        PrintWriter printWriter = new PrintWriter(testFile);
+        printWriter.println("");
+
+        FileWriter fileWriter = new FileWriter(filePath, true);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        bufferedWriter.write("package app;\n");
+        bufferedWriter.write("\n");
+        bufferedWriter.write("import junit.framework.*;\n");
+        bufferedWriter.write("public class " + target + "Test extends TestCase {\n");
+        for (int i = 0; i < algorithmResults.getPath().size(); i++) {
+            ArrayList<Object> paramValues = (ArrayList<Object>) algorithmResults.getParamValues().get(i);
+            int noTestCase = i + 1;
+            bufferedWriter.write("  public void testCase" + noTestCase + "() {\n");
+            bufferedWriter.write("   " + target + " x1 = new " + target + "();\n");
+            int varIndex = 2;
+            StringBuilder paramsToPassToMethod = new StringBuilder("");
+            for (int j = 0; j < paramValues.size(); j++) {
+                Object paramValue = paramValues.get(j);
+                String varType = paramValue.getClass().getSimpleName();
+                bufferedWriter.write("   java.lang." + varType + " x" + varIndex + " = new java.lang." + varType + "(" + paramValue + ");\n");
+                if (j == paramValues.size() - 1) {
+                    paramsToPassToMethod.append("x").append(varIndex);
+                } else {
+                    paramsToPassToMethod.append("x").append(varIndex).append(",");
                 }
-//                targets.add(tgt);
+                varIndex++;
             }
-        } catch (NumberFormatException e) {
-            System.err.println("Wrong format file: " + filePath);
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println("IO error: " + filePath);
-            System.exit(1);
+            String methodName = (String) algorithmResults.getMethodName().get(i);
+            bufferedWriter.write("   x1." + methodName + "(" + paramsToPassToMethod + ");\n");
+            bufferedWriter.write("  }\n");
+            bufferedWriter.write("\n");
         }
+        bufferedWriter.write("  public static void main (String[] args) {\n");
+        bufferedWriter.write("    junit.textui.TestRunner.run(" + target + "Test.class);\n");
+        bufferedWriter.write("  }\n");
+        bufferedWriter.write("}");
+        bufferedWriter.close();
+
+
     }
 }
