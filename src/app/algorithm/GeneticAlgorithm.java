@@ -7,6 +7,8 @@ import app.signature.TgtReader;
 import it.itc.etoc.ChromosomeFormer;
 import it.itc.etoc.MethodSignature;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -23,6 +25,7 @@ public class GeneticAlgorithm {
     private static int populationSize = 300;
     private static int maxPoint = 0;
     private static Result algorithmResult = new Result();
+    private static int selectionResult = 0;
 
     public GeneticAlgorithm(String signFile, ArrayList<Branch> branches, String targetFile, Result resultX) {
         Reader.readSignatures(signFile);
@@ -42,11 +45,19 @@ public class GeneticAlgorithm {
                         generatePopulation(methodSignature);
                         // TEST WITH ALL CHROMOSOME IN POPULATION
                         int z = 0;
-                        while (selection(branch, methodSignature, z) == 0 && z < 100) {
+                        selectionResult = selection(branch, methodSignature, z);
+                        while (selectionResult == 0 && z < 100) {
                             sortPopulation();
-                            crossover();
+                            crossover(methodSignature);
                             mutate();
-                            selection(branch, methodSignature, z);
+//                            if (branch.toString().equals("8-9-10-11-12-")) {
+//                                System.out.println("loop");
+//                                for (Object o : population) {
+//                                    ChromosomeX chromosome = (ChromosomeX) o;
+////                                    System.out.println(chromosome.getChromoSome().toString());
+//                                }
+//                            }
+                            selectionResult =  selection(branch, methodSignature, z);
                             z++;
                         }
                     }
@@ -123,6 +134,7 @@ public class GeneticAlgorithm {
                     difficulty = difficulty + 1;
                     String resultString = "Input value for path " + branch.toString() + " are: " + chromosome.getChromoSome().toString() + "---"
                             + "Dificulty: " + difficulty;
+//                    String resultString = "Input value for path " + branch.toString() + " are: " + chromosome.getChromoSome().toString();
                     result.add(resultString);
                     algorithmResult.setDifficulties(difficulty);
                     algorithmResult.setPath(branch.toString());
@@ -137,9 +149,11 @@ public class GeneticAlgorithm {
         return 0;
     }
 
-    private static void crossover() {
+    private static void crossover(MethodSignature methodSignature) {
 //        System.out.println("crossover");
         Random ran = new Random();
+        int noParams = methodSignature.getParameters().size();
+
         for (int i = 0; i < populationSize / 2; i += 2) {
             if (i >= populationSize / 2) {
                 i = (populationSize / 2) - 1;
@@ -148,16 +162,46 @@ public class GeneticAlgorithm {
             if (j >= populationSize / 2) {
                 j = 0;
             }
-            int x = ran.nextInt(3);
-            int y = ran.nextInt(3);
-            ChromosomeX simpleChromosomeX = (ChromosomeX) population.get(i);
-            ChromosomeX simpleChromosomeY = (ChromosomeX) population.get(j);
-            if (j != 0) {
-                Object temp = simpleChromosomeX.getSpecificValue(x);
-                simpleChromosomeX.fixChromosome(x, simpleChromosomeY.getSpecificValue(y));
-                simpleChromosomeY.fixChromosome(y, temp);
-            } else {
-                simpleChromosomeX.fixChromosome(x, simpleChromosomeY.getSpecificValue(y));
+            for (int z = 0; z < noParams / 2; z++) {
+                int x = ran.nextInt(noParams);
+                int y = ran.nextInt(noParams);
+                ChromosomeX simpleChromosomeX = (ChromosomeX) population.get(i);
+                ChromosomeX simpleChromosomeY = (ChromosomeX) population.get(j);
+                if (j != 0) {
+                    Object temp = simpleChromosomeX.getSpecificValue(x);
+                    simpleChromosomeX.fixChromosome(x, simpleChromosomeY.getSpecificValue(y));
+                    simpleChromosomeY.fixChromosome(y, temp);
+                } else {
+                    simpleChromosomeX.fixChromosome(x, simpleChromosomeY.getSpecificValue(y));
+                }
+            }
+        }
+    }
+
+    private static void crossover2(MethodSignature methodSignature) {
+        Random ran = new Random();
+        int noParams = methodSignature.getParameters().size();
+
+        for (int i = 0; i < populationSize / 2; i += 2) {
+            if (i >= populationSize / 2) {
+                i = (populationSize / 2) - 1;
+            }
+            int j = i + 1;
+            if (j >= populationSize / 2) {
+                j = 0;
+            }
+            for (int z = 0; z < noParams / 2; z++) {
+//                int x = ran.nextInt(noParams);
+//                int y = ran.nextInt(noParams);
+                ChromosomeX simpleChromosomeX = (ChromosomeX) population.get(i);
+                ChromosomeX simpleChromosomeY = (ChromosomeX) population.get(j);
+                if (j != 0) {
+                    Object temp = simpleChromosomeX.getSpecificValue(z);
+                    simpleChromosomeX.fixChromosome(z, simpleChromosomeY.getSpecificValue(z));
+                    simpleChromosomeY.fixChromosome(z, temp);
+                } else {
+                    simpleChromosomeX.fixChromosome(z, simpleChromosomeY.getSpecificValue(z));
+                }
             }
         }
     }
