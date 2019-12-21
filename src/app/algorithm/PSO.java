@@ -57,7 +57,7 @@ public class PSO {
     }
 
     private void _updateVelocity(Particle<Object> p, List<Object> gBest) {
-        int c1 = 2, c2 = 2; // Learning factors
+        double c1 = 0.1, c2 = 0.1; // Learning factors
         List<Object> newVelocity = new ArrayList<>();
         List<Object> currentV = p.getVelocity();
         List<Object> pBest = p.getpBest();

@@ -44,22 +44,15 @@ public class Main {
                 Swarm<?> s = pso.initSwarm(m);
 
                 pso.calculateFitness(b, m);
-                System.out.println("Highscore: " + s.getHighestScore() + " at K" + s.currentGeneration);
-                System.out.println("Best particle: " + s.getgBest());
-                System.out.println("");
-
                 while (s.currentGeneration < s.maxGeneration && s.getHighestScore() < 1) {
                     pso.calculateFitness(b, m);
                     pso.updateSwarm();
                     s.currentGeneration++;
-//                    System.out.println("Best particle: " + s.getgBest());
                 }
 
-                if (s.currentGeneration != 0) {
-                    System.out.println("Highscore: " + s.getHighestScore() + " at K" + s.currentGeneration);
-                    System.out.println("Best particle: " + s.getgBest());
-                    System.out.println("");
-                }
+                System.out.println("Highscore: " + s.getHighestScore() + " at K" + s.currentGeneration);
+                System.out.println("Best particle: " + s.getgBest());
+                System.out.println("");
 
                 result.addMethodName(m.getName());
                 result.addParamValues((List<Object>) s.getgBest());
