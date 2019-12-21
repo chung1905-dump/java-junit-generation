@@ -2,6 +2,8 @@ package app.signature;
 
 //import it.itc.etoc.MethodSignature;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,7 +36,7 @@ public class Reader {
                         String[] conditions = new String[0];
                         if (paramNames[i].contains("{")) {
                             paramType = paramNames[i].substring(0, paramNames[i].lastIndexOf("{"));
-                            conditions = paramNames[i].substring(paramNames[i].indexOf("{")+1,paramNames[i].indexOf("}")).split(";");
+                            conditions = paramNames[i].substring(paramNames[i].indexOf("{") + 1, paramNames[i].indexOf("}")).split(";");
                         }
                         paramsConditions.add(conditions);
                         params.add(paramType);
@@ -56,11 +58,11 @@ public class Reader {
                                 params);
                         for (int i = 0; i < paramsConditions.size(); i++) {
                             if (paramsConditions.get(i).length > 1) {
-                                methodSign.addParamCondition(i,"min",paramsConditions.get(i)[0]);
-                                methodSign.addParamCondition(i,"max",paramsConditions.get(i)[1]);
-                            }else{
-                                methodSign.addParamCondition(i,"min",paramsConditions.get(i)[0]);
-                                methodSign.addParamCondition(i,"max","");
+                                methodSign.addParamCondition(i, "min", paramsConditions.get(i)[0]);
+                                methodSign.addParamCondition(i, "max", paramsConditions.get(i)[1]);
+                            } else if (paramsConditions.get(i).length > 0) {
+                                methodSign.addParamCondition(i, "min", paramsConditions.get(i)[0]);
+                                methodSign.addParamCondition(i, "max", "");
                             }
                         }
                         addMethod(className, methodSign);
