@@ -39,10 +39,10 @@ public class PSO {
             // Fitness
             double point = _fitness(branch, traces);
             // Assign point
-            if (point > p.getHighestScore()) {
+            if (point >= p.getHighestScore()) {
                 p.setHighestScore(Math.max(point, p.getHighestScore()));
                 p.setpBest(p.getPosition());
-                if (point > swarm.getHighestScore()) {
+                if (point >= swarm.getHighestScore()) {
                     swarm.setHighestScore(point);
                     swarm.setgBest(p.getPosition());
                 }
@@ -121,7 +121,7 @@ public class PSO {
     }
 
     private Object _random(String varType) {
-        return _random(varType, 1, 100);
+        return _random(varType, 1, 3000);
     }
 
     private Object _random(String varType, int min, int max) {

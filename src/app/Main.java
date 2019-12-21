@@ -98,8 +98,9 @@ public class Main {
                 if (line.contains(";") && needAddImport != 2) {
                     needAddImport = 1;
                 }
-
-                bufferedWriter.write(line + "\n");
+                if (!line.contains("@")) {
+                    bufferedWriter.write(line + "\n");
+                }
 
                 if (needAddImport == 1) {
                     bufferedWriter.write("import it.itc.etoc.*;\n");
