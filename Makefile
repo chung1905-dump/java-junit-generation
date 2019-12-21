@@ -5,12 +5,15 @@ JUNIT_JAR = $(LIB_DIR)/junit.jar
 CP_LIB_FLAG = --class-path $(OJ_JAR):$(ETOC_JAR):$(JUNIT_JAR)
 TEST_CLASS = NextDate
 
-all: compile run
+all: compile run_1
 
 compile:
-	javac -d ./out -sourcepath ./src $(CP_LIB_FLAG) ./src/app/Main.java
+	javac -d ./out -sourcepath ./src $(CP_LIB_FLAG) ./src/app/Main.java ./src/app/GenerateFiles.java
 
-run:
+run_1:
+	java $(CP_LIB_FLAG):./out app.GenerateFiles $(TEST_CLASS)
+
+run_2:
 	java $(CP_LIB_FLAG):./out app.Main $(TEST_CLASS)
 
 clean:

@@ -10,7 +10,7 @@ import app.algorithm.pso.Particle;
 import app.algorithm.pso.Swarm;
 import app.path.Branch;
 import app.signature.Reader;
-import it.itc.etoc.MethodSignature;
+import app.signature.MethodSignature;
 
 public class PSO {
     private Swarm<Object> swarm;

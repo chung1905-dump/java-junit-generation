@@ -1,6 +1,6 @@
 package app.signature;
 
-import it.itc.etoc.MethodSignature;
+import app.signature.MethodSignature;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

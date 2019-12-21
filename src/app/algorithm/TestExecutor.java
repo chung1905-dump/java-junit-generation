@@ -2,7 +2,7 @@ package app.algorithm;
 
 import app.algorithm.pso.Particle;
 import app.system.Output;
-import it.itc.etoc.MethodSignature;
+import app.signature.MethodSignature;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
