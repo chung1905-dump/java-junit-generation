@@ -20,7 +20,7 @@ public class Main {
     public static String classUnderTest;
 
     public static void main(String[] args) throws IOException {
-        String target = "CheckTriangle";
+        String target = "NextDate";
         // CREATE EMPTY OJ FILE
         File ojFile = new File("src/app/" + target + ".oj");
         ojFile.createNewFile();
