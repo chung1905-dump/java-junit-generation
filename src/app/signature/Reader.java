@@ -18,39 +18,48 @@ public class Reader {
             Set<String> usedClassNames = new HashSet<>();
             String s, r = "";
             BufferedReader in = new BufferedReader(new FileReader(fileName));
+            boolean isCondition = false;
             while ((s = in.readLine()) != null && !s.equals("#")) {
                 s = s.replaceAll("\\s+", "");
                 if (s.length() > 0) {
-                    String s1 = s.substring(0, s.indexOf("("));
-                    String className = s1.substring(0, s1.lastIndexOf("."));
-                    String methodName = s1.substring(s1.lastIndexOf(".") + 1);
-                    String[] paramNames = s.substring(s.indexOf("(") + 1,
-                            s.indexOf(")")).split(",");
-                    if (paramNames.length == 1 && paramNames[0].equals(""))
-                        paramNames = new String[0];
-                    List<String> params = new LinkedList<>();
-                    for (int i = 0; i < paramNames.length; i++) {
-                        params.add(paramNames[i]);
-                        String usedClass = paramNames[i];
-                        if (paramNames[i].indexOf("[") != -1)
-                            usedClass = paramNames[i].substring(0,
-                                    paramNames[i].indexOf("["));
-                        if (!isPrimitiveType(paramNames[i]))
-                            usedClassNames.add(usedClass);
+                    if (s.equals("conditions")) {
+                        isCondition = true;
+                        continue;
                     }
-                    String simpleClassName =
-                            className.substring(className.lastIndexOf(".") + 1);
-                    if (simpleClassName.equals(methodName)) {
-                        MethodSignature methodSign = new MethodSignature(className,
-                                params);
-                        addConstructor(methodSign);
-                    } else {
-                        MethodSignature methodSign = new MethodSignature(methodName,
-                                params);
-                        addMethod(className, methodSign);
-                        usedClassNames.add(className);
+                    if (!isCondition) {
+                        String s1 = s.substring(0, s.indexOf("("));
+                        String className = s1.substring(0, s1.lastIndexOf("."));
+                        String methodName = s1.substring(s1.lastIndexOf(".") + 1);
+                        String[] paramNames = s.substring(s.indexOf("(") + 1,
+                                s.indexOf(")")).split(",");
+                        if (paramNames.length == 1 && paramNames[0].equals(""))
+                            paramNames = new String[0];
+                        List<String> params = new LinkedList<>();
+                        for (int i = 0; i < paramNames.length; i++) {
+                            params.add(paramNames[i]);
+                            String usedClass = paramNames[i];
+                            if (paramNames[i].indexOf("[") != -1)
+                                usedClass = paramNames[i].substring(0,
+                                        paramNames[i].indexOf("["));
+                            if (!isPrimitiveType(paramNames[i]))
+                                usedClassNames.add(usedClass);
+                        }
+                        String simpleClassName =
+                                className.substring(className.lastIndexOf(".") + 1);
+                        if (simpleClassName.equals(methodName)) {
+                            MethodSignature methodSign = new MethodSignature(className,
+                                    params);
+                            addConstructor(methodSign);
+                        } else {
+                            MethodSignature methodSign = new MethodSignature(methodName,
+                                    params);
+                            addMethod(className, methodSign);
+                            usedClassNames.add(className);
+                        }
+                        r = s;
+                    }else {
+                        int a = 0;
                     }
-                    r = s;
                 }
             }
             String r1 = r.substring(0, r.indexOf("("));

@@ -1,40 +1,34 @@
 package app;
 
-import app.algorithm.ChromosomeX;
 import app.algorithm.GeneticAlgorithm;
 import app.path.Branch;
 import app.path.PathGenerator;
 import app.path.PathReader;
-import app.signature.TgtReader;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Main {
     public static String classUnderTest;
 
     public static void main(String[] args) throws IOException {
         String target = "NextDate";
-        // CREATE EMPTY OJ FILE
-        File ojFile = new File("src/app/" + target + ".oj");
-        ojFile.createNewFile();
-        PrintWriter printWriter = new PrintWriter(ojFile);
-        printWriter.println("");
-
-        generateOjFile(target);
-        String[] filePath = new String[2];
-        filePath[0] = "-d=./out";
-        filePath[1] = "src/app/" + target + ".oj";
-
-        PathGenerator pathGenerator = new PathGenerator();
-        pathGenerator.generate(filePath);
-        editSignatureFile(target + ".sign", target);
+//        // CREATE EMPTY OJ FILE
+//        File ojFile = new File("src/app/" + target + ".oj");
+//        ojFile.createNewFile();
+//        PrintWriter printWriter = new PrintWriter(ojFile);
+//        printWriter.println("");
+//
+//        generateOjFile(target);
+//        String[] filePath = new String[2];
+//        filePath[0] = "-d=./out";
+//        filePath[1] = "src/app/" + target + ".oj";
+//
+//        PathGenerator pathGenerator = new PathGenerator();
+//        pathGenerator.generate(filePath);
+//        editSignatureFile(target + ".sign", target);
 
 
         PathReader pathReader = new PathReader();
@@ -59,8 +53,11 @@ public class Main {
 //            bufferedWriter.write("java.lang.Double.Double(double)\n");
             bufferedWriter.write("app." + target + "." + target + "()\n");
             bufferedWriter.write(content);
-            bufferedWriter.write("#");
             bufferedWriter.newLine();
+            bufferedWriter.write("conditions");
+            bufferedWriter.newLine();
+            bufferedWriter.write(content);
+            bufferedWriter.write("#");
             bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -142,7 +139,5 @@ public class Main {
         bufferedWriter.write("  }\n");
         bufferedWriter.write("}");
         bufferedWriter.close();
-
-
     }
 }
