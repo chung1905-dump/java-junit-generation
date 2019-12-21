@@ -3,6 +3,7 @@ out/*
 *.sign
 *.tgt
 *.oj
+src/app/*Test.java
 
 .classpath
 .project
