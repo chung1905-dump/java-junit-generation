@@ -5,7 +5,8 @@ import app.path.Branch;
 import app.signature.Reader;
 import app.signature.TgtReader;
 import it.itc.etoc.ChromosomeFormer;
-import it.itc.etoc.MethodSignature;
+//import it.itc.etoc.MethodSignature;
+import app.signature.MethodSignature;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -22,7 +23,7 @@ public class GeneticAlgorithm {
     private static List<Object> result = new ArrayList<Object>();
     private static String methodName = "";
     private static String pathAlreadyHasTestCase = "";
-    private static int populationSize = 300;
+    private static int populationSize = 500;
     private static int maxPoint = 0;
     private static Result algorithmResult = new Result();
     private static int selectionResult = 0;
@@ -46,17 +47,10 @@ public class GeneticAlgorithm {
                         // TEST WITH ALL CHROMOSOME IN POPULATION
                         int z = 0;
                         selectionResult = selection(branch, methodSignature, z);
-                        while (selectionResult == 0 && z < 100) {
+                        while (selectionResult == 0 && z < 500) {
                             sortPopulation();
                             crossover(methodSignature);
                             mutate();
-//                            if (branch.toString().equals("8-9-10-11-12-")) {
-//                                System.out.println("loop");
-//                                for (Object o : population) {
-//                                    ChromosomeX chromosome = (ChromosomeX) o;
-////                                    System.out.println(chromosome.getChromoSome().toString());
-//                                }
-//                            }
                             selectionResult =  selection(branch, methodSignature, z);
                             z++;
                         }
@@ -67,11 +61,12 @@ public class GeneticAlgorithm {
         for (int j = 0; j < result.size(); j++) {
             System.out.println(result.get(j));
         }
+
     }
 
     private static void generateValueForChromosome(String varType, int i) {
         int min = 1;
-        int max = 100;
+        int max = 3000;
         Random r = new Random();
 
         if (varType.equals("double") || varType.equals("float")) {
