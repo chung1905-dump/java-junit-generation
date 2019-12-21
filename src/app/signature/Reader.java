@@ -55,8 +55,10 @@ public class Reader {
                         MethodSignature methodSign = new MethodSignature(methodName,
                                 params);
                         for (int i = 0; i < paramsConditions.size(); i++) {
-                            methodSign.addParamCondition(i,"max",paramsConditions.get(i)[0]);
-                            methodSign.addParamCondition(i,"min",paramsConditions.get(i)[1]);
+                            if (paramsConditions.get(i).length > 1) {
+                                methodSign.addParamCondition(i,"min",paramsConditions.get(i)[0]);
+                                methodSign.addParamCondition(i,"max",paramsConditions.get(i)[1]);
+                            }
                         }
                         addMethod(className, methodSign);
                         usedClassNames.add(className);
