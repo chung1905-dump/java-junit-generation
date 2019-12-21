@@ -1,10 +1,7 @@
 package app.algorithm;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import app.algorithm.pso.Particle;
 import app.algorithm.pso.Swarm;
@@ -20,7 +17,7 @@ public class PSO {
         for (int i = 0; i < swarm.size; i++) {
             Particle<Object> particle = new Particle<>();
             particle.setPosition(randomFromParams(methodSignature));
-            particle.setVelocity(randomFromParams(methodSignature));
+            particle.setVelocity(randomFromParams(methodSignature, 0.5));
 
             swarm.add(particle);
         }
@@ -88,11 +85,15 @@ public class PSO {
         for (int i = 0; i < currentV.size(); i++) {
             double v = Double.parseDouble(currentV.get(i).toString());
             double pr = Double.parseDouble(present.get(i).toString());
-            Double newSmallP = pr + v;
-            newPostition.add(newSmallP);
+            double newSmallP = pr + v;
+            if (present.get(i).getClass().getSimpleName().equals("Integer")) {
+                newPostition.add((int) newSmallP);
+            } else {
+                newPostition.add(newSmallP);
+            }
         }
 
-        p.setVelocity(newPostition);
+        p.setPosition(newPostition);
     }
 
     private void __logInfo(Particle<Object> p, Branch b, Set<Integer> t, double point) {
@@ -111,17 +112,29 @@ public class PSO {
         return (double) (origSize - branchSet.size()) / origSize;
     }
 
-
-    private List<Object> randomFromParams(MethodSignature methodSignature) {
+    private List<Object> randomFromParams(MethodSignature methodSignature, double ratio) {
         List<Object> ret = new ArrayList<>();
-        for (Object p : methodSignature.getParameters()) {
-            ret.add(_random(p.toString()));
+        List parameters = methodSignature.getParameters();
+        for (int i = 0; i < parameters.size(); i++) {
+            int min = -20000, max = 20000;
+            Object p = parameters.get(i);
+            Map<String, Object> conditions = methodSignature.getParamCondition(i);
+            if (conditions != null) {
+                if (!conditions.get("min").equals("")) {
+                    min = Integer.parseInt((String) conditions.get("min"));
+                }
+                if (!conditions.get("max").equals("")) {
+                    max = Integer.parseInt((String) conditions.get("max"));
+                }
+//                System.out.println("Param " + i + " from " + min + " to " + max);
+            }
+            ret.add(_random(p.toString(), (int) (min * ratio), (int) (max * ratio)));
         }
         return ret;
     }
 
-    private Object _random(String varType) {
-        return _random(varType, 1, 3000);
+    private List<Object> randomFromParams(MethodSignature methodSignature) {
+        return randomFromParams(methodSignature, 1);
     }
 
     private Object _random(String varType, int min, int max) {

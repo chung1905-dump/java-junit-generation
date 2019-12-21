@@ -5,7 +5,6 @@ public class NextDate {
     private int d;
     private int y;
 
-    @Deprecated
     public static String run(int m, int d, int y) {
         int month = m;
         int day = d;
