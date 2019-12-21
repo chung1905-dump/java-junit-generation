@@ -1,0 +1,11 @@
+8-16-
+1
+Input value for path 1-2-3-4- are: [39.193552428316934, 54.62000170741202, 73.17540434830453]---Dificulty: 1
+Input value for path 1-2-3-5- are: [34.40926603723321, 5.851432136001502, 23.277351967664796]---Dificulty: 1
+Input value for path 1-2-6- are: [11.492404136422858, 30.084683784136555, 8.938548029660282]---Dificulty: 1
+Input value for path 1-7- are: [34.851047949917294, 3.4676583581446363, 39.53765733752909]---Dificulty: 1
+Input value for path 8-9-10-11-12- are: [32, 60, 7, 1]---Dificulty: 1
+Input value for path 8-9-10-11-13- are: [64, 58, 7, 37]---Dificulty: 1
+Input value for path 8-9-10-14- are: [62, 53, 69, 74]---Dificulty: 1
+Input value for path 8-9-15- are: [37, 1, 22, 15]---Dificulty: 1
+Input value for path 8-16- are: [11, 53, 57, 3]---Dificulty: 1

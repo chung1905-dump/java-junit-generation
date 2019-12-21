@@ -58,6 +58,9 @@ public class Reader {
                             if (paramsConditions.get(i).length > 1) {
                                 methodSign.addParamCondition(i,"min",paramsConditions.get(i)[0]);
                                 methodSign.addParamCondition(i,"max",paramsConditions.get(i)[1]);
+                            }else{
+                                methodSign.addParamCondition(i,"min",paramsConditions.get(i)[0]);
+                                methodSign.addParamCondition(i,"max","");
                             }
                         }
                         addMethod(className, methodSign);
