@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MethodSignature extends it.itc.etoc.MethodSignature {
-    private Map<Integer, Map<String, Object>> paramConditions;
+    private Map<Integer, Map<String, Object>> paramConditions = new HashMap<>();
 
     public MethodSignature(String s, List list) {
         super(s, list);

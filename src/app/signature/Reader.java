@@ -1,7 +1,5 @@
 package app.signature;
 
-import app.signature.MethodSignature;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,29 +22,41 @@ public class Reader {
                     String s1 = s.substring(0, s.indexOf("("));
                     String className = s1.substring(0, s1.lastIndexOf("."));
                     String methodName = s1.substring(s1.lastIndexOf(".") + 1);
-                    String[] paramNames = s.substring(s.indexOf("(") + 1,
-                            s.indexOf(")")).split(",");
+                    String[] paramNames = s.substring(s.indexOf("(") + 1, s.indexOf(")")).split(",");
                     if (paramNames.length == 1 && paramNames[0].equals(""))
                         paramNames = new String[0];
                     List<String> params = new LinkedList<>();
+                    List<String[]> paramsConditions = new LinkedList<>();
                     for (int i = 0; i < paramNames.length; i++) {
-                        params.add(paramNames[i]);
-                        String usedClass = paramNames[i];
+                        String paramType = paramNames[i];
+                        String[] conditions = new String[0];
+                        if (paramNames[i].contains("{")) {
+                            paramType = paramNames[i].substring(0, paramNames[i].lastIndexOf("{"));
+                            conditions = paramNames[i].substring(paramNames[i].indexOf("{") + 1, paramNames[i].indexOf("}")).split(";");
+                        }
+                        paramsConditions.add(conditions);
+                        params.add(paramType);
+                        String usedClass = paramType;
                         if (paramNames[i].indexOf("[") != -1)
                             usedClass = paramNames[i].substring(0,
                                     paramNames[i].indexOf("["));
-                        if (!isPrimitiveType(paramNames[i]))
+                        if (!isPrimitiveType(paramType))
                             usedClassNames.add(usedClass);
                     }
                     String simpleClassName =
                             className.substring(className.lastIndexOf(".") + 1);
                     if (simpleClassName.equals(methodName)) {
-                        MethodSignature methodSign = new MethodSignature(className,
-                                params);
+                        MethodSignature methodSign = new MethodSignature(className, params);
                         addConstructor(methodSign);
                     } else {
-                        MethodSignature methodSign = new MethodSignature(methodName,
-                                params);
+                        MethodSignature methodSign = new MethodSignature(methodName, params);
+                        for (int i = 0; i < paramsConditions.size(); i++) {
+                            if (paramsConditions.get(i).length == 0) {
+                                continue;
+                            }
+                            methodSign.addParamCondition(i, "min", paramsConditions.get(i)[0]);
+                            methodSign.addParamCondition(i, "max", paramsConditions.get(i)[1]);
+                        }
                         addMethod(className, methodSign);
                         usedClassNames.add(className);
                     }
