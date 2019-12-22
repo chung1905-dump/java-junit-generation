@@ -39,10 +39,10 @@ public class GenerateFiles {
 //            bufferedWriter.write("java.lang.Double.Double(double)\n");
             bufferedWriter.write("app." + target + "." + target + "()\n");
             bufferedWriter.write(content);
-            bufferedWriter.newLine();
-            bufferedWriter.write("conditions");
-            bufferedWriter.newLine();
-            bufferedWriter.write(content);
+//            bufferedWriter.newLine();
+//            bufferedWriter.write("conditions");
+//            bufferedWriter.newLine();
+//            bufferedWriter.write(content);
             bufferedWriter.write("#");
             bufferedWriter.close();
         } catch (IOException e) {

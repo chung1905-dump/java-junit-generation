@@ -23,7 +23,7 @@ public class GeneticAlgorithm {
     private static List<Object> result = new ArrayList<Object>();
     private static String methodName = "";
     private static String pathAlreadyHasTestCase = "";
-    private static int populationSize = 600;
+    private static int populationSize = 1000;
     private static int maxPoint = 0;
     private static Result algorithmResult = new Result();
     private static int selectionResult = 0;
@@ -49,7 +49,7 @@ public class GeneticAlgorithm {
                         // TEST WITH ALL CHROMOSOME IN POPULATION
                         int z = 0;
                         selectionResult = selection(branch, methodSignature, z);
-                        while (selectionResult == 0 && z < 700) {
+                        while (selectionResult == 0 && z < 1000) {
                             z++;
                             sortPopulation();
                             crossover2(methodSignature);
@@ -72,13 +72,16 @@ public class GeneticAlgorithm {
     private static void generateValueForChromosome(String varType, int i, MethodSignature methodSignature) {
         int min = 1;
         int max = 1000;
-        if (!methodSignature.getParamCondition(i).get("min").equals("")) {
-            min = Integer.parseInt((String) methodSignature.getParamCondition(i).get("min"));
+        if (methodSignature.getParamCondition(i) != null) {
+            if (!methodSignature.getParamCondition(i).get("min").equals("")) {
+                min = Integer.parseInt((String) methodSignature.getParamCondition(i).get("min"));
 
+            }
+            if (!methodSignature.getParamCondition(i).get("max").equals("")) {
+                max = Integer.parseInt((String) methodSignature.getParamCondition(i).get("max"));
+            }
         }
-        if (!methodSignature.getParamCondition(i).get("max").equals("")) {
-            max = Integer.parseInt((String) methodSignature.getParamCondition(i).get("max"));
-        }
+
         Random r = new Random();
 
         if (varType.equals("double") || varType.equals("float")) {
@@ -200,8 +203,6 @@ public class GeneticAlgorithm {
                 j = 0;
             }
             for (int z = 0; z < noParams / 2; z++) {
-//                int x = ran.nextInt(noParams);
-//                int y = ran.nextInt(noParams);
                 ChromosomeX simpleChromosomeX = (ChromosomeX) population.get(i);
                 ChromosomeX simpleChromosomeY = (ChromosomeX) population.get(j);
                 if (j != 0) {
@@ -227,12 +228,15 @@ public class GeneticAlgorithm {
         for (int i = populationSize / 2; i < populationSize; i++) {
             ChromosomeX simpleChromosome = (ChromosomeX) population.get(i);
             int x = ran.nextInt(3);
-            if (!methodSignature.getParamCondition(x).get("min").equals("")) {
-                min = Integer.parseInt((String) methodSignature.getParamCondition(x).get("min"));
+            if (methodSignature.getParamCondition(x) != null) {
+                if (!methodSignature.getParamCondition(x).get("min").equals("")) {
+                    min = Integer.parseInt((String) methodSignature.getParamCondition(x).get("min"));
+                }
+                if (!methodSignature.getParamCondition(x).get("max").equals("")) {
+                    max = Integer.parseInt((String) methodSignature.getParamCondition(x).get("max"));
+                }
             }
-            if (!methodSignature.getParamCondition(x).get("max").equals("")) {
-                max = Integer.parseInt((String) methodSignature.getParamCondition(x).get("max"));
-            }
+
             double randomValue = min + ran.nextDouble() * (max - min);
             if (simpleChromosome.getSpecificValue(x).getClass().getSimpleName().equals("Integer")) {
 //                randomValue = (int) randomValue;
