@@ -1,0 +1,3 @@
+app.NextDate.NextDate()
+app.NextDate.run(int{-5;15},int{-10;40},int{1000;2500})
+#

@@ -36,10 +36,10 @@ public class PSO {
             // Fitness
             double point = _fitness(branch, traces);
             // Assign point
-            if (point >= p.getHighestScore()) {
+            if (point > p.getHighestScore()) {
                 p.setHighestScore(Math.max(point, p.getHighestScore()));
                 p.setpBest(p.getPosition());
-                if (point >= swarm.getHighestScore()) {
+                if (point > swarm.getHighestScore()) {
                     swarm.setHighestScore(point);
                     swarm.setgBest(p.getPosition());
                 }
@@ -139,13 +139,19 @@ public class PSO {
 
     private Object _random(String varType, int min, int max) {
         Random r = new Random();
-
         if (varType.equals("double") || varType.equals("float")) {
             return min + r.nextDouble() * (max - min);
         } else if (varType.equals("int")) {
             return (int) (min + r.nextDouble() * (max - min));
         } else if (varType.equals("boolean")) {
             return r.nextBoolean();
+        } else if (varType.equals("int[]")) {
+            int l = Integer.parseInt(Objects.requireNonNull(_random("int", 1, 10)).toString());
+            int[] integers = new int[l];
+            for (int i = 0; i < l; i++) {
+                integers[i] = Integer.parseInt(Objects.requireNonNull(_random("int", min, max)).toString());
+            }
+            return integers;
         } else {
             // Non-support type
             return null;
